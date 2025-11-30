@@ -43,6 +43,7 @@
           devShells.default = pkgs.mkShellNoCC {
             packages = [
               self'.formatter
+              (pkgs.writeShellScriptBin "dev" "exec ${self'.packages.dev}/bin/nvim \"$@\"")
             ];
           };
 
