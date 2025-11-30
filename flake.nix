@@ -43,14 +43,13 @@
           devShells.default = pkgs.mkShellNoCC {
             packages = [
               self'.formatter
-              self'.packages.default
             ];
           };
 
           packages = {
-            default = self'.packages.neovim;
+            default = inputs.mnw.lib.wrap { inherit pkgs inputs; } ./config.nix;
 
-            neovim = inputs.mnw.lib.wrap { inherit pkgs inputs; } ./config.nix;
+            dev = self'.packages.default.devMode;
           };
         };
     };
