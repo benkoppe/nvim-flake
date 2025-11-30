@@ -42,6 +42,7 @@
     fzf
     chafa
     tree-sitter
+    clang
 
     # lua
     lua-language-server
