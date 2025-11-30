@@ -24,9 +24,7 @@
     };
   };
 
-  initLua = ''
-    require("config.lazy")
-  '';
+  luaFiles = [ ./init.lua ];
 
   extraBinPath = with pkgs; [
     #
