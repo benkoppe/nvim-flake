@@ -48,6 +48,8 @@
 
     prettierd
 
+    nushell
+
     # python
     black
     # pyright
