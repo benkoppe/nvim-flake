@@ -97,6 +97,7 @@
     texlab
 
     # haskell
+    ghc
     haskell-language-server
     fourmolu
     hlint
