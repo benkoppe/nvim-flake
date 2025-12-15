@@ -95,5 +95,12 @@
 
     # latex
     texlab
+
+    # haskell
+    haskell-language-server
+    fourmolu
+    hlint
+    pkgs.haskellPackages.cabal-fmt
+    pkgs.haskellPackages.haskell-debug-adapter
   ];
 }
