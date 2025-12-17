@@ -98,7 +98,7 @@
 
     # haskell
     # ghc
-    haskell-language-server
+    # haskell-language-server
     fourmolu
     hlint
     pkgs.haskellPackages.cabal-fmt
