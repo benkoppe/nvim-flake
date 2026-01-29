@@ -60,6 +60,7 @@
     gopls
     gofumpt
     gotools
+    golangci-lint
 
     # docker
     dockerfile-language-server
