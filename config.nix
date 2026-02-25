@@ -67,6 +67,7 @@
     docker-compose-language-service
 
     # webdev
+    deno
     vscode-langservers-extracted
     svelte-language-server
     tailwindcss-language-server
