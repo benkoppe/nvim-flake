@@ -17,7 +17,14 @@ return {
 				statix = {},
 				lua_ls = {},
 				denols = {},
-				ts_ls = {},
+				vtsls = {
+					filetypes = {
+						"javascript",
+						"javascriptreact",
+						"typescript",
+						"typescriptreact",
+					},
+				},
 			},
 			inlay_hints = { enabled = false },
 		},
