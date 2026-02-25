@@ -16,6 +16,7 @@ return {
 				nil_ls = false,
 				statix = {},
 				lua_ls = {},
+				denols = {},
 			},
 			inlay_hints = { enabled = false },
 		},
