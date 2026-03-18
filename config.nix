@@ -84,6 +84,10 @@
     # clang
     clang-tools
 
+    # swift
+    sourcekit-lsp
+    swift
+
     # random
     bash-language-server
     yaml-language-server

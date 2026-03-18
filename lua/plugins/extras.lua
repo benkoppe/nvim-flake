@@ -17,6 +17,7 @@ return {
 				statix = {},
 				lua_ls = {},
 				denols = {},
+				sourcekit = {},
 			},
 			inlay_hints = { enabled = false },
 		},
