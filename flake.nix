@@ -32,7 +32,7 @@
             name = "format";
             runtimeInputs = builtins.attrValues {
               inherit (pkgs)
-                nixfmt-rfc-style
+                nixfmt
                 deadnix
                 statix
                 fd
