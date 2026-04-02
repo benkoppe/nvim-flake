@@ -4,6 +4,8 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.11";
+
     mnw.url = "github:Gerg-L/mnw";
 
     flake-parts.url = "github:hercules-ci/flake-parts";
@@ -19,8 +21,12 @@
         {
           pkgs,
           self',
+          system,
           ...
         }:
+        let
+          pkgs-stable = inputs.nixpkgs-stable.legacyPackages.${system};
+        in
         {
           formatter = pkgs.writeShellApplication {
             name = "format";
@@ -48,7 +54,7 @@
           };
 
           packages = {
-            default = inputs.mnw.lib.wrap { inherit pkgs inputs; } ./config.nix;
+            default = inputs.mnw.lib.wrap { inherit pkgs pkgs-stable inputs; } ./config.nix;
 
             dev = self'.packages.default.devMode;
           };

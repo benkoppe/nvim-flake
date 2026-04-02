@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, pkgs-stable, ... }:
 {
   aliases = [
     "vi"
@@ -67,7 +67,7 @@
     docker-compose-language-service
 
     # webdev
-    deno
+    pkgs-stable.deno
     vscode-langservers-extracted
     svelte-language-server
     tailwindcss-language-server
