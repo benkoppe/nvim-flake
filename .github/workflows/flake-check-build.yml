@@ -1,6 +1,6 @@
 name: Flake Check & Build
 
-on: 
+on:
   pull_request:
   push:
     branches: [main]
@@ -15,8 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6.0.2
-      - uses: DeterminateSystems/determinate-nix-action@v3.5.2
-      - uses: DeterminateSystems/magic-nix-cache-action@565684385bcd71bad329742eefe8d12f2e765b39
+      - uses: DeterminateSystems/determinate-nix-action@v3.17.3
       - run: nix flake check --print-build-logs
 
   build:
@@ -24,6 +23,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6.0.2
-      - uses: DeterminateSystems/determinate-nix-action@v3.5.2
-      - uses: DeterminateSystems/magic-nix-cache-action@565684385bcd71bad329742eefe8d12f2e765b39
+      - uses: DeterminateSystems/determinate-nix-action@v3.17.3
       - run: nix build .#default --print-build-logs
