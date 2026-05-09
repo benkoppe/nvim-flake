@@ -34,7 +34,6 @@
     statix
     nixd
     nixfmt
-    lazygit
 
     ripgrep
     fd
