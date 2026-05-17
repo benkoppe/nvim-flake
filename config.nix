@@ -1,8 +1,9 @@
 { pkgs, pkgs-stable, ... }:
 {
   aliases = [
-    "vi"
-    "vim"
+    # "vi"
+    # "vim"
+    "v"
   ];
 
   providers = {
