@@ -25,7 +25,7 @@
     };
   };
 
-  luaFiles = [ ./lua/config/lazy.lua ];
+  luaFiles = [ ./init.lua ];
 
   extraBinPath = with pkgs; [
     #
