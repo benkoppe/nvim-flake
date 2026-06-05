@@ -25,7 +25,12 @@
     };
   };
 
-  luaFiles = [ ./init.lua ];
+  initLua = ''
+    vim.opt.runtimepath:append("${./.}")
+    require("config.lazy")
+  '';
+
+  luaFiles = [ ];
 
   extraBinPath = with pkgs; [
     #
