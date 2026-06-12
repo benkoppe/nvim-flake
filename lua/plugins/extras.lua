@@ -29,6 +29,21 @@ return {
     opts = { ensure_installed = { "svelte" } },
   },
 
+  {
+    "mrcjkb/rustaceanvim",
+    opts = {
+      server = {
+        default_settings = {
+          ["rust-analyzer"] = {
+            cargo = {
+              targetDir = "target/rust-analyzer",
+            },
+          },
+        },
+      },
+    },
+  },
+
   -- use prettierd
   {
     "stevearc/conform.nvim",
