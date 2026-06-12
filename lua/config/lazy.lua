@@ -39,6 +39,7 @@ if mnw ~= nil then
       -- precompiled binaries do not agree with nixos, and we can just make nix install it for us
       { "mason-org/mason-lspconfig.nvim", enabled = false },
       { "mason-org/mason.nvim", enabled = false },
+      { "jay-babu/mason-nvim-dap.nvim", enabled = false },
       -- import/override with your plugins
       { import = "plugins" },
     },
