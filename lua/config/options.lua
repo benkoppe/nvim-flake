@@ -5,3 +5,7 @@ vim.g.snacks_animate = false
 
 -- Use basedpyright with python
 vim.g.lazyvim_python_lsp = "basedpyright"
+
+-- Copy over ssh
+vim.o.clipboard = "unnamedplus"
+vim.g.clipboard = "osc52"
