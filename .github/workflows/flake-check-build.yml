@@ -14,7 +14,7 @@ jobs:
     name: nix flake check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@v7.0.0
       - uses: DeterminateSystems/determinate-nix-action@v3.21.1
       - run: nix flake check --print-build-logs
 
@@ -22,6 +22,6 @@ jobs:
     name: nix build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@v7.0.0
       - uses: DeterminateSystems/determinate-nix-action@v3.21.1
       - run: nix build .#default --print-build-logs
