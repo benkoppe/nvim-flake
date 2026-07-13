@@ -8,4 +8,4 @@ vim.g.lazyvim_python_lsp = "basedpyright"
 
 -- Copy over ssh
 vim.o.clipboard = "unnamedplus"
-vim.g.clipboard = "osc52"
+vim.g.clipboard = vim.env.TMUX and "tmux" or "osc52"
