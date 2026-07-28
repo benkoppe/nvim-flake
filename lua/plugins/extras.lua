@@ -1,188 +1,202 @@
 return {
-  -- autopairs support
-  {
-    "windwp/nvim-autopairs",
-    event = "InsertEnter",
-    config = true,
-    -- use opts = {} for passing setup options
-  },
+	-- autopairs support
+	{
+		"windwp/nvim-autopairs",
+		event = "InsertEnter",
+		config = true,
+		-- use opts = {} for passing setup options
+	},
 
-  -- adjust lsps and inlay hints
-  {
-    "neovim/nvim-lspconfig",
-    opts = {
-      servers = {
-        nixd = {},
-        nil_ls = false,
-        statix = {},
-        lua_ls = {},
-        denols = {},
-        sourcekit = {},
-        svelte = {},
-      },
-      inlay_hints = { enabled = false },
-    },
-  },
+	-- adjust lsps and inlay hints
+	{
+		"neovim/nvim-lspconfig",
+		opts = {
+			servers = {
+				nixd = {},
+				nil_ls = false,
+				statix = {},
+				lua_ls = {},
+				denols = {},
+				sourcekit = {},
+				svelte = {},
+			},
+			inlay_hints = { enabled = false },
+		},
+	},
 
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = { ensure_installed = { "svelte" } },
-  },
+	{
+		"nvim-treesitter/nvim-treesitter",
+		opts = { ensure_installed = { "svelte" } },
+	},
 
-  {
-    "mrcjkb/rustaceanvim",
-    opts = {
-      server = {
-        default_settings = {
-          ["rust-analyzer"] = {
-            cargo = {
-              targetDir = "target/rust-analyzer",
-            },
-          },
-        },
-      },
-    },
-  },
+	{
+		"mrcjkb/rustaceanvim",
+		opts = {
+			server = {
+				default_settings = {
+					["rust-analyzer"] = {
+						cargo = {
+							targetDir = "target/rust-analyzer",
+						},
+					},
+				},
+			},
+		},
+	},
 
-  -- use prettierd
-  {
-    "stevearc/conform.nvim",
-    opts = function(_, opts)
-      opts.formatters_by_ft = opts.formatters_by_ft or {}
-      local supported = {
-        "css",
-        "graphql",
-        "handlebars",
-        "html",
-        "javascript",
-        "javascriptreact",
-        "json",
-        "jsonc",
-        "less",
-        "markdown",
-        "markdown.mdx",
-        "scss",
-        "svelte",
-        "typescript",
-        "typescriptreact",
-        "vue",
-        "yaml",
-      }
-      for _, ft in ipairs(supported) do
-        opts.formatters_by_ft[ft] = opts.formatters_by_ft[ft] or {}
-        table.insert(opts.formatters_by_ft[ft], "prettierd")
-      end
+	-- use prettierd
+	{
+		"stevearc/conform.nvim",
+		opts = function(_, opts)
+			opts.formatters_by_ft = opts.formatters_by_ft or {}
 
-      opts.formatters = opts.formatters or {}
-      opts.formatters.prettier = {}
-      opts.formatters.prettierd = {}
-    end,
-  },
+			local function configured_formatter(bufnr)
+				local directory = vim.fs.dirname(vim.api.nvim_buf_get_name(bufnr))
 
-  -- changing behavior of cmp scrolling
-  {
-    "hrsh7th/nvim-cmp",
-    opts = function(_, opts)
-      local cmp = require("cmp")
+				if vim.fs.root(directory, { ".oxfmtrc.json", ".oxfmtrc.jsonc" }) then
+					return { "oxfmt" }
+				end
 
-      opts.mapping = cmp.mapping.preset.insert(vim.tbl_extend("force", opts.mapping, {
-        ["<Down>"] = cmp.config.disable,
-        ["<Up>"] = cmp.config.disable,
-        ["<CR>"] = cmp.config.disable,
+				return { "prettierd" }
+			end
 
-        ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
-        ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
-      }))
-      opts.experimental.ghost_text = nil
-      -- opts.snippet = {
-      --   expand = function(args)
-      --     vim.snippet.expand(args.body)
-      --   end,
-      -- }
-    end,
-  },
+			local supported = {
+				"css",
+				"graphql",
+				"handlebars",
+				"html",
+				"javascript",
+				"javascriptreact",
+				"json",
+				"jsonc",
+				"less",
+				"markdown",
+				"markdown.mdx",
+				"scss",
+				"svelte",
+				"typescript",
+				"typescriptreact",
+				"vue",
+				"yaml",
+			}
+			for _, filetype in ipairs(supported) do
+				opts.formatters_by_ft[filetype] = configured_formatter
+			end
 
-  -- commands for snippets with luasnip
-  {
-    "L3MON4D3/LuaSnip",
-    keys = {
-      -- command to expand/jump forward
-      {
-        "<c-k>",
-        function()
-          local ls = require("luasnip")
-          if ls.expand_or_jumpable() then
-            ls.expand_or_jump()
-          end
-        end,
-        silent = true,
-        desc = "Expand or jump snippet",
-        mode = { "i", "s" },
-      },
-      -- command to jump backward
-      {
-        "<c-j>",
-        function()
-          local ls = require("luasnip")
-          if ls.jumpable(-1) then
-            ls.jump(-1)
-          end
-        end,
-        silent = true,
-        desc = "Jump to prev snippet",
-        mode = { "i", "s" },
-      },
-    },
-  },
+			opts.formatters = opts.formatters or {}
+			opts.formatters.oxfmt = {}
+			opts.formatters.prettier = {}
+			opts.formatters.prettierd = {}
+			opts.formatters.nixfmt = {
+				append_args = { "-" },
+			}
+		end,
+	},
 
-  -- opencode integration
-  {
-    "NickvanDyke/opencode.nvim",
-    dependencies = {
-      -- Recommended for `ask()` and `select()`.
-      -- Required for default `toggle()` implementation.
-      { "folke/snacks.nvim", opts = { input = {}, picker = {}, terminal = {} } },
-    },
-    config = function()
-      ---@type opencode.Opts
-      vim.g.opencode_opts = {
-        -- Your configuration, if any — see `lua/opencode/config.lua`, or "goto definition".
-      }
+	-- changing behavior of cmp scrolling
+	{
+		"hrsh7th/nvim-cmp",
+		opts = function(_, opts)
+			local cmp = require("cmp")
 
-      -- Required for `opts.auto_reload`.
-      vim.o.autoread = true
+			opts.mapping = cmp.mapping.preset.insert(vim.tbl_extend("force", opts.mapping, {
+				["<Down>"] = cmp.config.disable,
+				["<Up>"] = cmp.config.disable,
+				["<CR>"] = cmp.config.disable,
 
-      -- Recommended/example keymaps.
-      vim.keymap.set({ "n", "x", "v" }, "<leader>o", "", { desc = "+opencode" })
-      vim.keymap.set({ "n", "x" }, "<leader>o?", function()
-        require("opencode").ask("@this: ", { submit = true })
-      end, { desc = "Ask opencode" })
-      vim.keymap.set({ "n", "x" }, "<leader>ox", function()
-        require("opencode").select()
-      end, { desc = "Execute opencode command…" })
-      vim.keymap.set({ "n", "x" }, "<leader>oa", function()
-        require("opencode").prompt("@this")
-      end, { desc = "Add to opencode" })
-      vim.keymap.set("n", "<leader>oo", function()
-        require("opencode").toggle()
-      end, { desc = "Toggle opencode" })
-      vim.keymap.set("n", "<leader>os", function()
-        require("opencode").command("session.interrupt")
-      end, { desc = "Interrupt opencode" })
+				["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
+				["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
+			}))
+			opts.experimental.ghost_text = nil
+			-- opts.snippet = {
+			--   expand = function(args)
+			--     vim.snippet.expand(args.body)
+			--   end,
+			-- }
+		end,
+	},
 
-      vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
-      vim.keymap.set("n", "<S-C-u>", function()
-        require("opencode").command("messages_half_page_up")
-      end, { desc = "opencode half page up" })
-      vim.keymap.set("n", "<S-C-d>", function()
-        require("opencode").command("messages_half_page_down")
-      end, { desc = "opencode half page down" })
-      vim.keymap.set("n", "<C-y>", function()
-        require("opencode").command("session.line.up")
-      end, { desc = "opencode line up" })
-      vim.keymap.set("n", "<C-e>", function()
-        require("opencode").command("session.line.down")
-      end, { desc = "opencode line down" })
-    end,
-  },
+	-- commands for snippets with luasnip
+	{
+		"L3MON4D3/LuaSnip",
+		keys = {
+			-- command to expand/jump forward
+			{
+				"<c-k>",
+				function()
+					local ls = require("luasnip")
+					if ls.expand_or_jumpable() then
+						ls.expand_or_jump()
+					end
+				end,
+				silent = true,
+				desc = "Expand or jump snippet",
+				mode = { "i", "s" },
+			},
+			-- command to jump backward
+			{
+				"<c-j>",
+				function()
+					local ls = require("luasnip")
+					if ls.jumpable(-1) then
+						ls.jump(-1)
+					end
+				end,
+				silent = true,
+				desc = "Jump to prev snippet",
+				mode = { "i", "s" },
+			},
+		},
+	},
+
+	-- opencode integration
+	{
+		"NickvanDyke/opencode.nvim",
+		dependencies = {
+			-- Recommended for `ask()` and `select()`.
+			-- Required for default `toggle()` implementation.
+			{ "folke/snacks.nvim", opts = { input = {}, picker = {}, terminal = {} } },
+		},
+		config = function()
+			---@type opencode.Opts
+			vim.g.opencode_opts = {
+				-- Your configuration, if any — see `lua/opencode/config.lua`, or "goto definition".
+			}
+
+			-- Required for `opts.auto_reload`.
+			vim.o.autoread = true
+
+			-- Recommended/example keymaps.
+			vim.keymap.set({ "n", "x", "v" }, "<leader>o", "", { desc = "+opencode" })
+			vim.keymap.set({ "n", "x" }, "<leader>o?", function()
+				require("opencode").ask("@this: ", { submit = true })
+			end, { desc = "Ask opencode" })
+			vim.keymap.set({ "n", "x" }, "<leader>ox", function()
+				require("opencode").select()
+			end, { desc = "Execute opencode command…" })
+			vim.keymap.set({ "n", "x" }, "<leader>oa", function()
+				require("opencode").prompt("@this")
+			end, { desc = "Add to opencode" })
+			vim.keymap.set("n", "<leader>oo", function()
+				require("opencode").toggle()
+			end, { desc = "Toggle opencode" })
+			vim.keymap.set("n", "<leader>os", function()
+				require("opencode").command("session.interrupt")
+			end, { desc = "Interrupt opencode" })
+
+			vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
+			vim.keymap.set("n", "<S-C-u>", function()
+				require("opencode").command("messages_half_page_up")
+			end, { desc = "opencode half page up" })
+			vim.keymap.set("n", "<S-C-d>", function()
+				require("opencode").command("messages_half_page_down")
+			end, { desc = "opencode half page down" })
+			vim.keymap.set("n", "<C-y>", function()
+				require("opencode").command("session.line.up")
+			end, { desc = "opencode line up" })
+			vim.keymap.set("n", "<C-e>", function()
+				require("opencode").command("session.line.down")
+			end, { desc = "opencode line down" })
+		end,
+	},
 }
