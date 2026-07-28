@@ -54,6 +54,7 @@
     stylua
 
     prettierd
+    oxfmt
 
     nushell
 
