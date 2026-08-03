@@ -105,7 +105,7 @@
     markdownlint-cli2
     rubocop
     shfmt
-    sqlfluff
+    pkgs-stable.sqlfluff
 
     # latex
     texlab
