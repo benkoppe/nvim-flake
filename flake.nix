@@ -31,7 +31,7 @@
           pkgs-stable = inputs.nixpkgs-stable.legacyPackages.${system};
 
           neovimModules = [
-            ./config.nix
+            ./nix/neovim.nix
             {
               inherit pkgs;
               _module.args.pkgs-stable = pkgs-stable;

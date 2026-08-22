@@ -15,7 +15,7 @@
       "v"
     ];
 
-    config_directory = lib.mkDefault ./.;
+    config_directory = lib.mkDefault ../.;
   };
 
   hosts = {
@@ -25,12 +25,35 @@
     perl.nvim-host.enable = true;
   };
 
-  specs.bootstrap = {
+  specs.foundation = {
     autoconfig = false;
     runtimeDeps = false;
+    pluginDeps = false;
 
     data = with pkgs.vimPlugins; [
-      lazy-nvim
+      lze
+      lzextras
+
+      mini-icons
+      snacks-nvim
+      tokyonight-nvim
+    ];
+  };
+
+  specs.editor = {
+    lazy = true;
+    autoconfig = false;
+    runtimeDeps = false;
+    pluginDeps = false;
+
+    data = with pkgs.vimPlugins; [
+      fzf-lua
+      neo-tree-nvim
+      lualine-nvim
+      which-key-nvim
+      persistence-nvim
+
+      nui-nvim
       plenary-nvim
     ];
   };
