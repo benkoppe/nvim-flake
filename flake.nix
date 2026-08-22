@@ -6,7 +6,10 @@
 
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-26.05";
 
-    mnw.url = "github:Gerg-L/mnw";
+    nix-wrapper-modules = {
+      url = "github:BirdeeHub/nix-wrapper-modules";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     flake-parts.url = "github:hercules-ci/flake-parts";
   };
@@ -26,6 +29,14 @@
         }:
         let
           pkgs-stable = inputs.nixpkgs-stable.legacyPackages.${system};
+
+          neovimModules = [
+            ./config.nix
+            {
+              inherit pkgs;
+              _module.args.pkgs-stable = pkgs-stable;
+            }
+          ];
         in
         {
           formatter = pkgs.writeShellApplication {
@@ -51,12 +62,27 @@
               self'.formatter
               (pkgs.writeShellScriptBin "dev" "exec ${self'.packages.dev}/bin/nvim \"$@\"")
             ];
+
+            shellHook = ''
+              export NVIM_FLAKE_CONFIG="$PWD"
+            '';
           };
 
           packages = {
-            default = inputs.mnw.lib.wrap { inherit pkgs pkgs-stable inputs; } ./config.nix;
+            default = inputs.nix-wrapper-modules.lib.evalPackage neovimModules;
 
-            dev = self'.packages.default.devMode;
+            dev = inputs.nix-wrapper-modules.lib.evalPackage (
+              neovimModules
+              ++ [
+                ({ lib, ... }: {
+                  settings.config_directory = lib.mkForce (
+                    lib.generators.mkLuaInline ''
+                      assert(vim.env.NVIM_FLAKE_CONFIG, "NVIM_FLAKE_CONFIG is not set")
+                    ''
+                  );
+                })
+              ]
+            );
           };
         };
 
