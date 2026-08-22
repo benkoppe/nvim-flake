@@ -107,7 +107,11 @@ local function set_lsp_keymaps(client, buffer)
 	end, "Rename", { expr = true })
 
 	if
-		supports(client, "workspace/willRenameFiles", buffer) or supports(client, "workspace/didRenameFiles", buffer)
+		client.name ~= "rust-analyzer"
+		and (
+			supports(client, "workspace/willRenameFiles", buffer)
+			or supports(client, "workspace/didRenameFiles", buffer)
+		)
 	then
 		map(nil, "n", "<leader>cR", function()
 			Snacks.rename.rename_file()
@@ -249,6 +253,8 @@ return {
 				},
 			})
 
+			local language_servers = require("config.languages").setup()
+
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("config_lsp_attach", {
 					clear = true,
@@ -266,7 +272,8 @@ return {
 			-- The toggle keeps them available when wanted.
 			Snacks.toggle.inlay_hints():map("<leader>uh")
 
-			vim.lsp.enable("lua_ls")
+			table.insert(language_servers, "lua_ls")
+			vim.lsp.enable(language_servers)
 		end,
 	},
 }
