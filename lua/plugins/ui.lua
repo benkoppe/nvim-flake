@@ -17,6 +17,52 @@ return {
 		after = function()
 			require("snacks").setup({
 				bigfile = {},
+				dashboard = {
+					sections = {
+						{ section = "header" },
+						{ section = "keys", gap = 1, padding = 1 },
+					},
+					preset = {
+						keys = {
+							{
+								icon = " ",
+								key = "f",
+								desc = "Find file",
+								action = ":FzfLua files",
+							},
+							{
+								icon = " ",
+								key = "n",
+								desc = "New file",
+								action = ":ene | startinsert",
+							},
+							{
+								icon = " ",
+								key = "g",
+								desc = "Find text",
+								action = ":FzfLua live_grep",
+							},
+							{
+								icon = " ",
+								key = "r",
+								desc = "Recent files",
+								action = ":FzfLua oldfiles",
+							},
+							{
+								icon = " ",
+								key = "s",
+								desc = "Restore session",
+								action = ":lua require('lze').trigger_load('persistence.nvim'); require('persistence').load()",
+							},
+							{
+								icon = " ",
+								key = "q",
+								desc = "Quit",
+								action = ":qa",
+							},
+						},
+					},
+				},
 				indent = {},
 				input = {},
 				notifier = {},
