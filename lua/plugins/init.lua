@@ -6,4 +6,5 @@ return {
 	{ import = "plugins.lsp" },
 	{ import = "plugins.languages" },
 	{ import = "plugins.formatting" },
+	{ import = "plugins.linting" },
 }
