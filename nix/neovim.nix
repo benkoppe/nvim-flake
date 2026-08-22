@@ -154,6 +154,19 @@
     ];
   };
 
+  specs.lsp = {
+    lazy = true;
+    autoconfig = false;
+    runtimeDeps = false;
+    pluginDeps = false;
+
+    data = with pkgs.vimPlugins; [
+      nvim-lspconfig
+      lazydev-nvim
+      inc-rename-nvim
+    ];
+  };
+
   runtimePkgs = with pkgs; [
     #
     # runtime dependencies
