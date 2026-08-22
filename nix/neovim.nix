@@ -167,6 +167,19 @@
     ];
   };
 
+  specs.languages = {
+    lazy = true;
+    autoconfig = false;
+    runtimeDeps = false;
+    pluginDeps = false;
+
+    data = with pkgs.vimPlugins; [
+      SchemaStore-nvim
+      crates-nvim
+      rustaceanvim
+    ];
+  };
+
   specs.formatting = {
     lazy = true;
     autoconfig = false;
@@ -225,8 +238,6 @@
     tailwindcss-language-server
     vue-language-server
     vtsls # typescript
-    typescript-language-server
-    javascript-typescript-langserver
 
     # rust
     rust-analyzer
