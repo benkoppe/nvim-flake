@@ -12,14 +12,6 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
 	end,
 })
 
--- Highlight yanked text.
-vim.api.nvim_create_autocmd("TextYankPost", {
-	group = augroup("highlight_yank"),
-	callback = function()
-		(vim.hl or vim.highlight).on_yank()
-	end,
-})
-
 -- Keep split sizes balanced after resizing Neovim.
 vim.api.nvim_create_autocmd("VimResized", {
 	group = augroup("resize_splits"),
