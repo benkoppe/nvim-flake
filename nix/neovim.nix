@@ -58,6 +58,29 @@
     ];
   };
 
+  specs.coding = {
+    lazy = true;
+    autoconfig = false;
+    runtimeDeps = false;
+    pluginDeps = false;
+
+    data = with pkgs.vimPlugins; [
+      nvim-cmp
+      cmp-nvim-lsp
+      cmp-buffer
+      cmp-path
+      cmp_luasnip
+      luasnip
+      friendly-snippets
+
+      nvim-autopairs
+      mini-comment
+      nvim-ts-context-commentstring
+      mini-surround
+      yanky-nvim
+    ];
+  };
+
   runtimePkgs = with pkgs; [
     #
     # runtime dependencies

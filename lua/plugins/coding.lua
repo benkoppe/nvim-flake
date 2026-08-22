@@ -1,0 +1,300 @@
+return {
+	{
+		"friendly-snippets",
+		dep_of = "luasnip",
+	},
+
+	{
+		"cmp-nvim-lsp",
+		dep_of = "nvim-cmp",
+	},
+
+	{
+		"luasnip",
+		dep_of = "nvim-cmp",
+		keys = {
+			{
+				"<C-k>",
+				function()
+					local luasnip = require("luasnip")
+
+					if luasnip.expand_or_jumpable() then
+						luasnip.expand_or_jump()
+					end
+				end,
+				mode = { "i", "s" },
+				silent = true,
+				desc = "Expand or jump snippet",
+			},
+			{
+				"<C-j>",
+				function()
+					local luasnip = require("luasnip")
+
+					if luasnip.jumpable(-1) then
+						luasnip.jump(-1)
+					end
+				end,
+				mode = { "i", "s" },
+				silent = true,
+				desc = "Jump to previous snippet",
+			},
+			{
+				"<S-Tab>",
+				function()
+					local luasnip = require("luasnip")
+
+					if luasnip.jumpable(-1) then
+						luasnip.jump(-1)
+					end
+				end,
+				mode = { "i", "s" },
+				silent = true,
+				desc = "Jump to previous snippet",
+			},
+		},
+		after = function()
+			local luasnip = require("luasnip")
+
+			luasnip.setup({
+				history = true,
+				delete_check_events = "TextChanged",
+			})
+
+			require("luasnip.loaders.from_vscode").lazy_load()
+		end,
+	},
+
+	-- These are loaded explicitly after nvim-cmp itself. Their registration
+	-- scripts require cmp and therefore cannot be ordinary dependencies.
+	{
+		"cmp-buffer",
+		lazy = true,
+	},
+	{
+		"cmp-path",
+		lazy = true,
+	},
+	{
+		"cmp_luasnip",
+		lazy = true,
+	},
+
+	{
+		"nvim-cmp",
+		event = "InsertEnter",
+		after = function()
+			require("lze").trigger_load({
+				"cmp-buffer",
+				"cmp-path",
+				"cmp_luasnip",
+			})
+
+			vim.lsp.config("*", {
+				capabilities = require("cmp_nvim_lsp").default_capabilities(),
+			})
+
+			local cmp = require("cmp")
+			local luasnip = require("luasnip")
+			local defaults = require("cmp.config.default")()
+
+			cmp.setup({
+				completion = {
+					completeopt = "menu,menuone,noinsert",
+				},
+				preselect = cmp.PreselectMode.Item,
+				snippet = {
+					expand = function(args)
+						luasnip.lsp_expand(args.body)
+					end,
+				},
+				mapping = cmp.mapping.preset.insert({
+					["<Down>"] = cmp.config.disable,
+					["<Up>"] = cmp.config.disable,
+					["<CR>"] = cmp.config.disable,
+					["<C-b>"] = cmp.mapping.scroll_docs(-4),
+					["<C-f>"] = cmp.mapping.scroll_docs(4),
+					["<C-n>"] = cmp.mapping.select_next_item({
+						behavior = cmp.SelectBehavior.Select,
+					}),
+					["<C-p>"] = cmp.mapping.select_prev_item({
+						behavior = cmp.SelectBehavior.Select,
+					}),
+					["<C-Space>"] = cmp.mapping.complete(),
+					["<C-y>"] = cmp.mapping.confirm({
+						select = true,
+					}),
+					["<S-CR>"] = cmp.mapping.confirm({
+						behavior = cmp.ConfirmBehavior.Replace,
+						select = true,
+					}),
+					["<C-CR>"] = cmp.mapping(function(fallback)
+						cmp.abort()
+						fallback()
+					end, { "i", "s" }),
+					["<Tab>"] = cmp.mapping(function(fallback)
+						if luasnip.jumpable(1) then
+							luasnip.jump(1)
+						else
+							fallback()
+						end
+					end, { "i", "s" }),
+				}),
+				sources = cmp.config.sources({
+					{ name = "nvim_lsp" },
+					{ name = "path" },
+					{ name = "luasnip" },
+				}, {
+					{ name = "buffer" },
+				}),
+				formatting = {
+					format = function(_, item)
+						local icon = MiniIcons.get("lsp", item.kind)
+
+						if icon then
+							item.kind = icon .. " " .. item.kind
+						end
+
+						local widths = {
+							abbr = 40,
+							menu = 30,
+						}
+
+						for field, width in pairs(widths) do
+							if item[field] and vim.fn.strdisplaywidth(item[field]) > width then
+								item[field] = vim.fn.strcharpart(item[field], 0, width - 1) .. "…"
+							end
+						end
+
+						return item
+					end,
+				},
+				experimental = {
+					ghost_text = false,
+				},
+				sorting = defaults.sorting,
+			})
+		end,
+	},
+
+	{
+		"nvim-autopairs",
+		event = "InsertEnter",
+		after = function()
+			require("nvim-autopairs").setup()
+		end,
+	},
+
+	{
+		"nvim-ts-context-commentstring",
+		dep_of = "mini.comment",
+		after = function()
+			require("ts_context_commentstring").setup({
+				enable_autocmd = false,
+			})
+		end,
+	},
+
+	{
+		"mini.comment",
+		event = "DeferredUIEnter",
+		after = function()
+			require("mini.comment").setup({
+				options = {
+					custom_commentstring = function()
+						return require("ts_context_commentstring.internal").calculate_commentstring()
+							or vim.bo.commentstring
+					end,
+				},
+			})
+		end,
+	},
+
+	{
+		"mini.surround",
+		event = "DeferredUIEnter",
+		after = function()
+			require("mini.surround").setup({
+				mappings = {
+					add = "gsa",
+					delete = "gsd",
+					find = "gsf",
+					find_left = "gsF",
+					highlight = "gsh",
+					replace = "gsr",
+					update_n_lines = "gsn",
+				},
+			})
+		end,
+	},
+
+	{
+		"yanky.nvim",
+		event = "DeferredUIEnter",
+		after = function()
+			require("yanky").setup({
+				system_clipboard = {
+					sync_with_ring = false,
+				},
+				highlight = {
+					timer = 150,
+				},
+			})
+
+			vim.keymap.set({ "n", "x" }, "<leader>p", "<cmd>YankyRingHistory<cr>", {
+				desc = "Open yank history",
+			})
+			vim.keymap.set({ "n", "x" }, "y", "<Plug>(YankyYank)", {
+				desc = "Yank text",
+			})
+			vim.keymap.set({ "n", "x" }, "p", "<Plug>(YankyPutAfter)", {
+				desc = "Put text after cursor",
+			})
+			vim.keymap.set({ "n", "x" }, "P", "<Plug>(YankyPutBefore)", {
+				desc = "Put text before cursor",
+			})
+			vim.keymap.set({ "n", "x" }, "gp", "<Plug>(YankyGPutAfter)", {
+				desc = "Put text after selection",
+			})
+			vim.keymap.set({ "n", "x" }, "gP", "<Plug>(YankyGPutBefore)", {
+				desc = "Put text before selection",
+			})
+			vim.keymap.set("n", "[y", "<Plug>(YankyCycleForward)", {
+				desc = "Cycle forward through yank history",
+			})
+			vim.keymap.set("n", "]y", "<Plug>(YankyCycleBackward)", {
+				desc = "Cycle backward through yank history",
+			})
+			vim.keymap.set("n", "]p", "<Plug>(YankyPutIndentAfterLinewise)", {
+				desc = "Put indented after cursor",
+			})
+			vim.keymap.set("n", "[p", "<Plug>(YankyPutIndentBeforeLinewise)", {
+				desc = "Put indented before cursor",
+			})
+			vim.keymap.set("n", "]P", "<Plug>(YankyPutIndentAfterLinewise)", {
+				desc = "Put indented after cursor",
+			})
+			vim.keymap.set("n", "[P", "<Plug>(YankyPutIndentBeforeLinewise)", {
+				desc = "Put indented before cursor",
+			})
+			vim.keymap.set("n", ">p", "<Plug>(YankyPutIndentAfterShiftRight)", {
+				desc = "Put and indent right",
+			})
+			vim.keymap.set("n", "<p", "<Plug>(YankyPutIndentAfterShiftLeft)", {
+				desc = "Put and indent left",
+			})
+			vim.keymap.set("n", ">P", "<Plug>(YankyPutIndentBeforeShiftRight)", {
+				desc = "Put before and indent right",
+			})
+			vim.keymap.set("n", "<P", "<Plug>(YankyPutIndentBeforeShiftLeft)", {
+				desc = "Put before and indent left",
+			})
+			vim.keymap.set("n", "=p", "<Plug>(YankyPutAfterFilter)", {
+				desc = "Put after applying a filter",
+			})
+			vim.keymap.set("n", "=P", "<Plug>(YankyPutBeforeFilter)", {
+				desc = "Put before applying a filter",
+			})
+		end,
+	},
+}
