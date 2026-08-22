@@ -96,13 +96,10 @@ return {
 				"cmp_luasnip",
 			})
 
-			vim.lsp.config("*", {
-				capabilities = require("cmp_nvim_lsp").default_capabilities(),
-			})
-
 			local cmp = require("cmp")
 			local luasnip = require("luasnip")
 			local defaults = require("cmp.config.default")()
+			require("lazydev.integrations.cmp").setup()
 
 			cmp.setup({
 				completion = {
@@ -147,6 +144,7 @@ return {
 					end, { "i", "s" }),
 				}),
 				sources = cmp.config.sources({
+					{ name = "lazydev" },
 					{ name = "nvim_lsp" },
 					{ name = "path" },
 					{ name = "luasnip" },
