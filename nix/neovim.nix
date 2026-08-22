@@ -167,6 +167,17 @@
     ];
   };
 
+  specs.formatting = {
+    lazy = true;
+    autoconfig = false;
+    runtimeDeps = false;
+    pluginDeps = false;
+
+    data = with pkgs.vimPlugins; [
+      conform-nvim
+    ];
+  };
+
   runtimePkgs = with pkgs; [
     #
     # runtime dependencies

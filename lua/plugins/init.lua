@@ -4,4 +4,5 @@ return {
 	{ import = "plugins.coding" },
 	{ import = "plugins.treesitter" },
 	{ import = "plugins.lsp" },
+	{ import = "plugins.formatting" },
 }
