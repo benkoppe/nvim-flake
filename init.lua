@@ -8,4 +8,7 @@ vim.keymap.set("n", " ", "<Nop>", {
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
+require("config.options")
+require("config.autocmds")
 require("lze").load("plugins")
+require("config.keymaps")
