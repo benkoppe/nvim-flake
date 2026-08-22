@@ -1,3 +1,5 @@
+local with_after = require("lzextras").loaders.with_after
+
 return {
 	{
 		"friendly-snippets",
@@ -7,6 +9,7 @@ return {
 	{
 		"cmp-nvim-lsp",
 		dep_of = "nvim-cmp",
+		load = with_after,
 	},
 
 	{
@@ -70,14 +73,17 @@ return {
 	{
 		"cmp-buffer",
 		lazy = true,
+		load = with_after,
 	},
 	{
 		"cmp-path",
 		lazy = true,
+		load = with_after,
 	},
 	{
 		"cmp_luasnip",
 		lazy = true,
+		load = with_after,
 	},
 
 	{
