@@ -81,6 +81,79 @@
     ];
   };
 
+  specs.treesitter = {
+    autoconfig = false;
+    runtimeDeps = false;
+    pluginDeps = false;
+
+    data = with pkgs.vimPlugins; [
+      (nvim-treesitter.withPlugins (
+        parsers: with parsers; [
+          bash
+          bibtex
+          c
+          c_sharp
+          cmake
+          cpp
+          diff
+          dockerfile
+          fsharp
+          git_config
+          git_rebase
+          gitattributes
+          gitcommit
+          gitignore
+          go
+          gomod
+          gosum
+          gowork
+          haskell
+          html
+          java
+          javascript
+          jsdoc
+          json
+          json5
+          kotlin
+          latex
+          lua
+          luadoc
+          luap
+          markdown
+          markdown_inline
+          ninja
+          nix
+          nu
+          ocaml
+          php
+          prisma
+          printf
+          python
+          query
+          regex
+          ron
+          rst
+          ruby
+          rust
+          sql
+          svelte
+          toml
+          tsx
+          typescript
+          vim
+          vimdoc
+          xml
+          yaml
+          zig
+        ]
+      ))
+      nvim-treesitter-textobjects
+      nvim-treesitter-context
+      nvim-ts-autotag
+      mini-ai
+    ];
+  };
+
   runtimePkgs = with pkgs; [
     #
     # runtime dependencies
@@ -95,8 +168,6 @@
     fd
     fzf
     chafa
-    tree-sitter
-    clang
 
     # lua
     lua-language-server
