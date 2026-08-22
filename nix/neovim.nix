@@ -1,4 +1,6 @@
 {
+  config,
+  options,
   pkgs,
   pkgs-stable,
   wlib,
@@ -7,6 +9,17 @@
 }:
 {
   imports = [ wlib.wrapperModules.neovim ];
+
+  specMods = {
+    options.runtimePkgs = options.runtimePkgs // {
+      description = ''
+        Runtime packages associated with this plugin spec.
+        Packages are included only when the spec is enabled.
+      '';
+    };
+  };
+
+  runtimePkgs = config.specCollect (packages: spec: packages ++ (spec.runtimePkgs or [ ])) [ ];
 
   settings = {
     aliases = [
@@ -55,6 +68,14 @@
 
       nui-nvim
       plenary-nvim
+    ];
+
+    runtimePkgs = with pkgs; [
+      ripgrep
+      fd
+      fzf
+      chafa
+      lazygit
     ];
   };
 
@@ -165,6 +186,29 @@
       lazydev-nvim
       inc-rename-nvim
     ];
+
+    runtimePkgs = with pkgs; [
+      nixd
+      lua-language-server
+      nushell
+      basedpyright
+      ruff
+      gopls
+      dockerfile-language-server
+      docker-compose-language-service
+      deno
+      vscode-langservers-extracted
+      svelte-language-server
+      tailwindcss-language-server
+      vue-language-server
+      vtsls
+      clang-tools
+      sourcekit-lsp
+      swift
+      bash-language-server
+      yaml-language-server
+      texlab
+    ];
   };
 
   specs.languages = {
@@ -178,6 +222,15 @@
       crates-nvim
       rustaceanvim
     ];
+
+    runtimePkgs = with pkgs; [
+      # rustaceanvim
+      rust-analyzer
+      rustfmt
+      lldb
+
+      haskellPackages.haskell-debug-adapter
+    ];
   };
 
   specs.formatting = {
@@ -189,88 +242,40 @@
     data = with pkgs.vimPlugins; [
       conform-nvim
     ];
+
+    runtimePkgs = with pkgs; [
+      nixfmt
+      stylua
+      prettierd
+      oxfmt
+      black
+      gofumpt
+      gotools
+      fourmolu
+      pkgs.haskellPackages.cabal-fmt
+      ktlint
+      rubocop
+      shfmt
+      sqlfluff
+    ];
   };
 
-  runtimePkgs = with pkgs; [
-    #
-    # runtime dependencies
-    #
-    deadnix
-    statix
-    nixd
-    nixfmt
-    lazygit
+  specs.linting = {
+    lazy = true;
+    autoconfig = false;
+    runtimeDeps = false;
+    pluginDeps = false;
 
-    ripgrep
-    fd
-    fzf
-    chafa
+    data = with pkgs.vimPlugins; [
+      nvim-lint
+    ];
 
-    # lua
-    lua-language-server
-    stylua
-
-    prettierd
-    oxfmt
-
-    nushell
-
-    # python
-    black
-    # pyright
-    basedpyright
-    ruff
-
-    # go
-    gopls
-    gofumpt
-    gotools
-    golangci-lint
-
-    # docker
-    dockerfile-language-server
-    docker-compose-language-service
-
-    # webdev
-    pkgs-stable.deno
-    vscode-langservers-extracted
-    svelte-language-server
-    tailwindcss-language-server
-    vue-language-server
-    vtsls # typescript
-
-    # rust
-    rust-analyzer
-    rustfmt
-    lldb
-
-    # clang
-    clang-tools
-
-    # swift
-    sourcekit-lsp
-    swift
-
-    # random
-    bash-language-server
-    yaml-language-server
-
-    # csharpier  # Disabled due to .NET build issues on macOS ARM64
-    ktlint
-    markdownlint-cli2
-    rubocop
-    shfmt
-    pkgs-stable.sqlfluff
-
-    # latex
-    texlab
-
-    # haskell
-    # ghc
-    # haskell-language-server
-    fourmolu
-    hlint
-    pkgs.haskellPackages.cabal-fmt
-    pkgs.haskellPackages.haskell-debug-adapter
-  ];
+    runtimePkgs = with pkgs; [
+      deadnix
+      statix
+      golangci-lint
+      hlint
+      markdownlint-cli2
+    ];
+  };
 }
