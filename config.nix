@@ -1,38 +1,41 @@
-{ pkgs, pkgs-stable, ... }:
 {
-  aliases = [
-    # "vi"
-    # "vim"
-    "v"
-  ];
+  pkgs,
+  pkgs-stable,
+  wlib,
+  lib,
+  ...
+}:
+{
+  imports = [ wlib.wrapperModules.neovim ];
 
-  providers = {
-    ruby.enable = true;
-    python3.enable = true;
-    nodeJs.enable = true;
-    perl.enable = true;
-  };
-
-  plugins = {
-    start = [
-      pkgs.vimPlugins.lazy-nvim
-      pkgs.vimPlugins.plenary-nvim
+  settings = {
+    aliases = [
+      # "vi"
+      # "vim"
+      "v"
     ];
 
-    dev.ben = {
-      pure = ./.;
-      impure = "~/Developer/nvim-flake";
-    };
+    config_directory = lib.mkDefault ./.;
   };
 
-  initLua = ''
-    vim.opt.runtimepath:append("${./.}")
-    require("config.lazy")
-  '';
+  hosts = {
+    ruby.nvim-host.enable = true;
+    python3.nvim-host.enable = true;
+    node.nvim-host.enable = true;
+    perl.nvim-host.enable = true;
+  };
 
-  luaFiles = [ ];
+  specs.bootstrap = {
+    autoconfig = false;
+    runtimeDeps = false;
 
-  extraBinPath = with pkgs; [
+    data = with pkgs.vimPlugins; [
+      lazy-nvim
+      plenary-nvim
+    ];
+  };
+
+  runtimePkgs = with pkgs; [
     #
     # runtime dependencies
     #
