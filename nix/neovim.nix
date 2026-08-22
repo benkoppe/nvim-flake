@@ -273,6 +273,7 @@
     runtimePkgs = with pkgs; [
       deadnix
       statix
+      go
       golangci-lint
       hlint
       markdownlint-cli2
