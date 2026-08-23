@@ -191,10 +191,30 @@ return {
 		"lualine.nvim",
 		event = "DeferredUIEnter",
 		after = function()
+			local trouble = require("trouble")
+			local symbols = trouble.statusline({
+				mode = "symbols",
+				groups = {},
+				title = false,
+				filter = {
+					range = true,
+				},
+				format = "{kind_icon}{symbol.name:Normal}",
+				hl_group = "lualine_c_normal",
+			})
+
 			require("lualine").setup({
 				options = {
 					globalstatus = true,
 					theme = "auto",
+					disabled_filetypes = {
+						statusline = {
+							"dashboard",
+							"alpha",
+							"ministarter",
+							"snacks_dashboard",
+						},
+					},
 					component_separators = {
 						left = "│",
 						right = "│",
@@ -247,19 +267,30 @@ return {
 							},
 						},
 						{
-							"filename",
-							path = 1,
-							symbols = {
-								modified = "  ",
-								readonly = "",
-								unnamed = "",
-							},
+							require("config.lualine").pretty_path(),
+						},
+						{
+							symbols.get,
+							cond = function()
+								return vim.b.trouble_lualine ~= false and symbols.has()
+							end,
 						},
 					},
 					lualine_x = {
-						"encoding",
-						"fileformat",
-						"filetype",
+						Snacks.profiler.status(),
+						{
+							function()
+								return "  " .. require("dap").status()
+							end,
+							cond = function()
+								return package.loaded.dap and require("dap").status() ~= ""
+							end,
+							color = function()
+								return {
+									fg = Snacks.util.color("Debug"),
+								}
+							end,
+						},
 					},
 					lualine_y = {
 						"progress",
@@ -269,8 +300,8 @@ return {
 					},
 				},
 				extensions = {
-					"fzf",
 					"neo-tree",
+					"fzf",
 				},
 			})
 		end,
