@@ -7,4 +7,5 @@ return {
 	{ import = "plugins.languages" },
 	{ import = "plugins.formatting" },
 	{ import = "plugins.linting" },
+	{ import = "plugins.ai" },
 }
