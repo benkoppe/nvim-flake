@@ -243,6 +243,7 @@
       markdown-preview-nvim
       cmake-tools-nvim
       clangd_extensions-nvim
+      venv-selector-nvim
     ];
 
     runtimePkgs = with pkgs; [
