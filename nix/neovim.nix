@@ -69,6 +69,11 @@
       harpoon2
       mini-diff
 
+      grug-far-nvim
+      flash-nvim
+      trouble-nvim
+      todo-comments-nvim
+
       nui-nvim
       plenary-nvim
     ];
