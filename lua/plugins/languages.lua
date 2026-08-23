@@ -241,4 +241,27 @@ return {
 			})
 		end,
 	},
+
+	{
+		"venv-selector.nvim",
+		cmd = "VenvSelect",
+		ft = "python",
+		keys = {
+			{
+				"<leader>cv",
+				"<cmd>VenvSelect<cr>",
+				ft = "python",
+				desc = "Select virtual environment",
+			},
+		},
+		after = function()
+			require("venv-selector").setup({
+				options = {
+					picker = "fzf-lua",
+					notify_user_on_venv_activation = true,
+					override_notify = false,
+				},
+			})
+		end,
+	},
 }
