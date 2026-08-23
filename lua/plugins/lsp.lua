@@ -118,6 +118,10 @@ local function set_lsp_keymaps(client, buffer)
 		end, "Rename file")
 	end
 
+	if client.name == "clangd" then
+		map(nil, "n", "<leader>ch", "<cmd>LspClangdSwitchSourceHeader<cr>", "Switch source/header")
+	end
+
 	map("textDocument/documentSymbol", "n", "<leader>ss", fzf_picker("lsp_document_symbols"), "Document symbols")
 
 	map("workspace/symbol", "n", "<leader>sS", fzf_picker("lsp_live_workspace_symbols"), "Workspace symbols")
