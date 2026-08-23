@@ -102,6 +102,7 @@
       nvim-ts-context-commentstring
       mini-surround
       yanky-nvim
+      mini-hipatterns
     ];
   };
 
@@ -121,6 +122,7 @@
           cpp
           diff
           dockerfile
+          fish
           fsharp
           git_config
           git_rebase
@@ -133,6 +135,8 @@
           gowork
           haskell
           html
+          hyprlang
+          ini
           java
           javascript
           jsdoc
@@ -150,10 +154,11 @@
           nu
           ocaml
           php
-          prisma
           printf
+          prisma
           python
           query
+          rasi
           regex
           ron
           rst

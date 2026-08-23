@@ -182,6 +182,44 @@ return {
 	},
 
 	{
+		"mini.hipatterns",
+		event = { "BufReadPre", "BufNewFile" },
+		after = function()
+			local hipatterns = require("mini.hipatterns")
+
+			hipatterns.setup({
+				highlighters = {
+					hex_color = hipatterns.gen_highlighter.hex_color({
+						priority = 2000,
+					}),
+					shorthand = {
+						pattern = "()#%x%x%x()%f[^%x%w]",
+						group = function(_, _, data)
+							local match = data.full_match
+
+							if match == "#add" then
+								return
+							end
+
+							local red = match:sub(2, 2)
+							local green = match:sub(3, 3)
+							local blue = match:sub(4, 4)
+							local color = "#" .. red .. red .. green .. green .. blue .. blue
+
+							return hipatterns.compute_hex_color_group(color, "bg")
+						end,
+						extmark_opts = {
+							priority = 2000,
+						},
+					},
+				},
+			})
+
+			hipatterns.enable(0)
+		end,
+	},
+
+	{
 		"nvim-autopairs",
 		event = "InsertEnter",
 		after = function()
