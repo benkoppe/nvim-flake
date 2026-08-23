@@ -21,18 +21,16 @@ local function lsp_roots(buf)
 	local path = normalize(vim.api.nvim_buf_get_name(buf))
 
 	for _, client in ipairs(vim.lsp.get_clients({ bufnr = buf })) do
-		if client.name ~= "copilot" then
-			for _, folder in ipairs(client.workspace_folders or {}) do
-				local root = vim.uri_to_fname(folder.uri)
+		for _, folder in ipairs(client.workspace_folders or {}) do
+			local root = vim.uri_to_fname(folder.uri)
 
-				if contains(root, path) then
-					roots[#roots + 1] = normalize(root)
-				end
+			if contains(root, path) then
+				roots[#roots + 1] = normalize(root)
 			end
+		end
 
-			if client.root_dir and contains(client.root_dir, path) then
-				roots[#roots + 1] = normalize(client.root_dir)
-			end
+		if client.root_dir and contains(client.root_dir, path) then
+			roots[#roots + 1] = normalize(client.root_dir)
 		end
 	end
 
