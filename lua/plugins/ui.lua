@@ -246,6 +246,35 @@ return {
 
 			which_key.setup({
 				preset = "helix",
+				icons = {
+					rules = {
+						{
+							pattern = "harpoon",
+							cat = "filetype",
+							name = "harpoon",
+						},
+						{
+							pattern = "explorer",
+							cat = "filetype",
+							name = "neo-tree",
+						},
+						{
+							pattern = "%f[%a]todo",
+							cat = "file",
+							name = "TODO",
+						},
+						{
+							pattern = "%f[%a]yank",
+							icon = "󰅇",
+							color = "yellow",
+						},
+						{
+							pattern = "%f[%a]put%f[%A]",
+							icon = "󰅇",
+							color = "yellow",
+						},
+					},
+				},
 			})
 
 			which_key.add({
