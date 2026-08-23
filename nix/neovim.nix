@@ -3,6 +3,7 @@
   options,
   pkgs,
   pkgs-stable,
+  llm-pkgs,
   wlib,
   lib,
   ...
@@ -286,5 +287,27 @@
       hlint
       markdownlint-cli2
     ];
+  };
+
+  specs.ai = {
+    lazy = true;
+    autoconfig = false;
+    runtimeDeps = false;
+    pluginDeps = false;
+
+    data = with pkgs.vimPlugins; [
+      opencode-nvim
+    ];
+
+    runtimePkgs =
+      with pkgs;
+      [
+        llm-pkgs.opencode
+        curl
+        lsof
+      ]
+      ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+        pkgs.procps
+      ];
   };
 }

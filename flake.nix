@@ -11,6 +11,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    llm-agents.url = "github:numtide/llm-agents.nix";
+
     flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
@@ -29,12 +31,16 @@
         }:
         let
           pkgs-stable = inputs.nixpkgs-stable.legacyPackages.${system};
+          llm-pkgs = inputs.llm-agents.packages.${system};
 
           neovimModules = [
             ./nix/neovim.nix
             {
               inherit pkgs;
-              _module.args.pkgs-stable = pkgs-stable;
+              _module.args = {
+                inherit pkgs-stable;
+                inherit llm-pkgs;
+              };
             }
           ];
         in
