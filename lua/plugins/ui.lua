@@ -169,6 +169,7 @@ return {
 			Snacks.toggle.animate():map("<leader>ua")
 			Snacks.toggle.indent():map("<leader>ug")
 			Snacks.toggle.scroll():map("<leader>uS")
+			Snacks.toggle.words():map("<leader>ux")
 			Snacks.toggle.profiler():map("<leader>dpp")
 			Snacks.toggle.profiler_highlights():map("<leader>dph")
 		end,

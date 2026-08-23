@@ -64,7 +64,14 @@ return {
 				delete_check_events = "TextChanged",
 			})
 
-			require("luasnip.loaders.from_vscode").lazy_load()
+			local vscode = require("luasnip.loaders.from_vscode")
+
+			vscode.lazy_load()
+			vscode.lazy_load({
+				paths = {
+					vim.fn.stdpath("config") .. "/snippets",
+				},
+			})
 		end,
 	},
 
@@ -85,6 +92,14 @@ return {
 		lazy = true,
 		load = with_after,
 	},
+	{
+		"cmp-git",
+		lazy = true,
+		load = with_after,
+		after = function()
+			require("cmp_git").setup()
+		end,
+	},
 
 	{
 		"nvim-cmp",
@@ -94,6 +109,7 @@ return {
 				"cmp-buffer",
 				"cmp-path",
 				"cmp_luasnip",
+				"cmp-git",
 			})
 
 			local cmp = require("cmp")
@@ -148,6 +164,7 @@ return {
 					{ name = "nvim_lsp" },
 					{ name = "path" },
 					{ name = "luasnip" },
+					{ name = "git" },
 				}, {
 					{ name = "buffer" },
 				}),
