@@ -568,6 +568,7 @@ return {
 
 	{
 		"trouble.nvim",
+		dep_of = "lualine.nvim",
 		cmd = "Trouble",
 		keys = {
 			{
