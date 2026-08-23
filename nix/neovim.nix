@@ -236,9 +236,43 @@
       # rustaceanvim
       rust-analyzer
       rustfmt
-      lldb
+    ];
+  };
 
+  specs.debugging = {
+    lazy = true;
+    autoconfig = false;
+    runtimeDeps = false;
+    pluginDeps = false;
+
+    data = with pkgs.vimPlugins; [
+      nvim-dap
+      nvim-dap-ui
+      nvim-dap-virtual-text
+      nvim-nio
+      nvim-dap-go
+      nvim-dap-python
+    ];
+
+    runtimePkgs = with pkgs; [
+      # Rust, C, C++
+      vscode-extensions.vadimcn.vscode-lldb.adapter
+
+      # Go
+      delve
+
+      # Python
+      python3Packages.debugpy
+
+      # JS and TS
+      vscode-js-debug
+      nodejs
+      tsx
+
+      # Haskell
+      haskellPackages.ghc
       haskellPackages.haskell-debug-adapter
+      haskellPackages.ghci-dap
     ];
   };
 
