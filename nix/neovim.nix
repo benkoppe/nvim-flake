@@ -255,7 +255,9 @@
       rustfmt
       # VimTeX
       pplatex
-      texlive.combined.scheme-medium
+      (texliveSmall.withPackages (tex: [
+        tex.latexmk
+      ]))
       # Markdown preview
       nodejs
       # CMake Tools
