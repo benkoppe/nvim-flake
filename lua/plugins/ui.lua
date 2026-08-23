@@ -167,6 +167,19 @@ return {
 					lualine_a = { "mode" },
 					lualine_b = {
 						"branch",
+						{
+							"diff",
+							source = function()
+								local summary = vim.b.minidiff_summary
+
+								return summary
+									and {
+										added = summary.add,
+										modified = summary.change,
+										removed = summary.delete,
+									}
+							end,
+						},
 					},
 					lualine_c = {
 						{
