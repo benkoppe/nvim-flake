@@ -58,6 +58,12 @@ map("n", "<leader>bD", "<cmd>bd<cr>", { desc = "Delete buffer and window" })
 -- Search
 map({ "i", "n", "s" }, "<Esc>", function()
 	vim.cmd.nohlsearch()
+
+	local luasnip = package.loaded.luasnip
+	if luasnip and luasnip.expand_or_jumpable() then
+		luasnip.unlink_current()
+	end
+
 	return "<Esc>"
 end, {
 	expr = true,
@@ -99,6 +105,15 @@ map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
 map("x", "<", "<gv")
 map("x", ">", ">gv")
 map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New file" })
+
+map("n", "<leader>K", "<cmd>normal! K<cr>", { desc = "Keywordprg" })
+
+map("n", "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", {
+	desc = "Add comment below",
+})
+map("n", "gcO", "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", {
+	desc = "Add comment above",
+})
 
 -- Diagnostics
 local function diagnostic_jump(count, severity)
@@ -186,9 +201,18 @@ map("n", "<leader>fT", function()
 	Snacks.terminal()
 end, { desc = "Terminal" })
 
-map({ "n", "t" }, "<C-/>", function()
-	Snacks.terminal.focus()
-end, { desc = "Terminal" })
+local function toggle_root_terminal()
+	Snacks.terminal.focus(nil, {
+		cwd = require("config.root")(),
+	})
+end
+
+map({ "n", "t" }, "<C-/>", toggle_root_terminal, {
+	desc = "Terminal (root)",
+})
+map({ "n", "t" }, "<C-_>", toggle_root_terminal, {
+	desc = "Terminal (root)",
+})
 
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
 map("n", "<leader>ui", vim.show_pos, { desc = "Inspect position" })

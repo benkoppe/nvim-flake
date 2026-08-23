@@ -270,8 +270,27 @@ return {
 			},
 			{
 				"<leader>gl",
-				"<cmd>FzfLua git_commits<cr>",
+				root_picker("git_commits"),
 				desc = "Git log",
+			},
+			{
+				"<leader>gL",
+				function()
+					require("fzf-lua").git_commits({
+						cwd = vim.uv.cwd(),
+					})
+				end,
+				desc = "Git log (cwd)",
+			},
+			{
+				"<leader>gb",
+				"<cmd>FzfLua git_blame<cr>",
+				desc = "Git blame",
+			},
+			{
+				"<leader>gf",
+				"<cmd>FzfLua git_bcommits<cr>",
+				desc = "Current file history",
 			},
 			{
 				"<leader>gs",
