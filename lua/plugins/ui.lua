@@ -14,6 +14,36 @@ return {
 		"snacks.nvim",
 		lazy = false,
 		priority = 1000,
+		keys = {
+			{
+				"<leader>n",
+				function()
+					Snacks.notifier.show_history()
+				end,
+				desc = "Notification history",
+			},
+			{
+				"<leader>un",
+				function()
+					Snacks.notifier.hide()
+				end,
+				desc = "Dismiss notifications",
+			},
+			{
+				"<leader>.",
+				function()
+					Snacks.scratch()
+				end,
+				desc = "Toggle scratch buffer",
+			},
+			{
+				"<leader>S",
+				function()
+					Snacks.scratch.select()
+				end,
+				desc = "Select scratch buffer",
+			},
+		},
 		after = function()
 			require("snacks").setup({
 				bigfile = {},
@@ -89,22 +119,6 @@ return {
 			})
 
 			vim.o.statuscolumn = "%!v:lua.Snacks.statuscolumn()"
-
-			vim.keymap.set("n", "<leader>n", function()
-				Snacks.notifier.show_history()
-			end, { desc = "Notification history" })
-
-			vim.keymap.set("n", "<leader>un", function()
-				Snacks.notifier.hide()
-			end, { desc = "Dismiss notifications" })
-
-			vim.keymap.set("n", "<leader>.", function()
-				Snacks.scratch()
-			end, { desc = "Toggle scratch buffer" })
-
-			vim.keymap.set("n", "<leader>S", function()
-				Snacks.scratch.select()
-			end, { desc = "Select scratch buffer" })
 
 			vim.keymap.set("n", "<leader>gg", function()
 				Snacks.lazygit({ cwd = root.git() })
@@ -246,36 +260,9 @@ return {
 
 			which_key.setup({
 				preset = "helix",
-				icons = {
-					rules = {
-						{
-							pattern = "harpoon",
-							cat = "filetype",
-							name = "harpoon",
-						},
-						{
-							pattern = "explorer",
-							cat = "filetype",
-							name = "neo-tree",
-						},
-						{
-							pattern = "%f[%a]todo",
-							cat = "file",
-							name = "TODO",
-						},
-						{
-							pattern = "%f[%a]yank",
-							icon = "󰅇",
-							color = "yellow",
-						},
-						{
-							pattern = "%f[%a]put%f[%A]",
-							icon = "󰅇",
-							color = "yellow",
-						},
-					},
-				},
 			})
+
+			require("lze").h.which_key.register()
 
 			which_key.add({
 				{ "<leader><tab>", group = "tabs" },
