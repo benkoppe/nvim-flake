@@ -239,6 +239,8 @@
       crates-nvim
       rustaceanvim
       vimtex
+      render-markdown-nvim
+      markdown-preview-nvim
     ];
 
     runtimePkgs = with pkgs; [
@@ -248,6 +250,8 @@
       # VimTeX
       pplatex
       texlive.combined.scheme-medium
+      # Markdown preview
+      nodejs
     ];
   };
 

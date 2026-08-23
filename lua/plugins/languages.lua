@@ -98,4 +98,54 @@ return {
 			},
 		},
 	},
+
+	{
+		"markdown-preview.nvim",
+		cmd = {
+			"MarkdownPreview",
+			"MarkdownPreviewStop",
+			"MarkdownPreviewToggle",
+		},
+		keys = {
+			{
+				"<leader>cp",
+				"<cmd>MarkdownPreviewToggle<cr>",
+				ft = { "markdown", "markdown.mdx" },
+				desc = "Markdown preview",
+			},
+		},
+		after = function()
+			-- The plugin was loaded after the original FileType event.
+			vim.cmd("doautocmd FileType")
+		end,
+	},
+
+	{
+		"render-markdown.nvim",
+		ft = { "markdown", "markdown.mdx" },
+		after = function()
+			local render_markdown = require("render-markdown")
+
+			render_markdown.setup({
+				code = {
+					sign = false,
+					width = "block",
+					right_pad = 1,
+				},
+				heading = {
+					sign = false,
+					icons = {},
+				},
+				checkbox = {
+					enabled = false,
+				},
+			})
+
+			Snacks.toggle({
+				name = "Render Markdown",
+				get = render_markdown.get,
+				set = render_markdown.set,
+			}):map("<leader>um")
+		end,
+	},
 }

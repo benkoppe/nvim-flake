@@ -1,5 +1,6 @@
 vim.filetype.add({
 	extension = {
+		mdx = "markdown.mdx",
 		rasi = "rasi",
 		rofi = "rasi",
 		wofi = "rasi",
