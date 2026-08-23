@@ -438,6 +438,21 @@ return {
 			local fzf = require("fzf-lua")
 			local actions = require("fzf-lua.actions")
 
+			local function toggle_root(_, context)
+				local options = vim.deepcopy(context.__call_opts)
+				local buffer = context.__CTX.bufnr
+				local project_root = vim.fs.normalize(root(buffer))
+				local cwd = vim.fs.normalize(vim.uv.cwd())
+				local current = options.cwd and vim.fs.normalize(options.cwd) or cwd
+
+				options.cwd = current == project_root and cwd or project_root
+				options.buf = buffer
+
+				fzf[context.__INFO.cmd](options)
+			end
+
+			require("fzf-lua.config").set_action_helpstr(toggle_root, "toggle-root-dir")
+
 			require("lze").trigger_load("trouble.nvim")
 			local trouble_action = require("trouble.sources.fzf").actions.open
 
@@ -454,6 +469,8 @@ return {
 					files = {
 						true,
 						["ctrl-t"] = trouble_action,
+						["ctrl-r"] = toggle_root,
+						["alt-c"] = toggle_root,
 					},
 				},
 				winopts = {
