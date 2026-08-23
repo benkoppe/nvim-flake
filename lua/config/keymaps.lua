@@ -138,8 +138,35 @@ map("n", "<leader>xq", function()
 	end
 end, { desc = "Quickfix list" })
 
-map("n", "[q", vim.cmd.cprev, { desc = "Previous quickfix item" })
-map("n", "]q", vim.cmd.cnext, { desc = "Next quickfix item" })
+map("n", "[q", function()
+	if package.loaded.trouble and require("trouble").is_open() then
+		require("trouble").prev({
+			skip_groups = true,
+			jump = true,
+		})
+		return
+	end
+
+	local ok, err = pcall(vim.cmd.cprev)
+	if not ok then
+		vim.notify(err, vim.log.levels.ERROR)
+	end
+end, { desc = "Previous Trouble or quickfix item" })
+
+map("n", "]q", function()
+	if package.loaded.trouble and require("trouble").is_open() then
+		require("trouble").next({
+			skip_groups = true,
+			jump = true,
+		})
+		return
+	end
+
+	local ok, err = pcall(vim.cmd.cnext)
+	if not ok then
+		vim.notify(err, vim.log.levels.ERROR)
+	end
+end, { desc = "Next Trouble or quickfix item" })
 
 -- Snacks
 Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>us")

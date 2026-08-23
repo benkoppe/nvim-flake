@@ -78,8 +78,97 @@ vim.api.nvim_create_autocmd("BufEnter", {
 
 return {
 	{
+		"grug-far.nvim",
+		cmd = { "GrugFar", "GrugFarWithin" },
+		keys = {
+			{
+				"<leader>sr",
+				function()
+					local extension = vim.bo.buftype == "" and vim.fn.expand("%:e")
+
+					require("grug-far").open({
+						transient = true,
+						prefills = {
+							filesFilter = extension ~= "" and "*." .. extension or nil,
+						},
+					})
+				end,
+				mode = { "n", "x" },
+				desc = "Search and replace",
+			},
+		},
+		after = function()
+			require("grug-far").setup({})
+		end,
+	},
+
+	{
+		"flash.nvim",
+		event = "DeferredUIEnter",
+		keys = {
+			{
+				"s",
+				function()
+					require("flash").jump()
+				end,
+				mode = { "n", "x", "o" },
+				desc = "Flash",
+			},
+			{
+				"S",
+				function()
+					require("flash").treesitter()
+				end,
+				mode = { "n", "x", "o" },
+				desc = "Flash Treesitter",
+			},
+			{
+				"r",
+				function()
+					require("flash").remote()
+				end,
+				mode = "o",
+				desc = "Remote Flash",
+			},
+			{
+				"R",
+				function()
+					require("flash").treesitter_search()
+				end,
+				mode = { "o", "x" },
+				desc = "Treesitter search",
+			},
+			{
+				"<C-s>",
+				function()
+					require("flash").toggle()
+				end,
+				mode = "c",
+				desc = "Toggle Flash search",
+			},
+			{
+				"<C-Space>",
+				function()
+					require("flash").treesitter({
+						actions = {
+							["<C-Space>"] = "next",
+							["<BS>"] = "prev",
+						},
+					})
+				end,
+				mode = { "n", "x", "o" },
+				desc = "Treesitter incremental selection",
+			},
+		},
+		after = function()
+			require("flash").setup({})
+		end,
+	},
+
+	{
 		"fzf-lua",
 		cmd = "FzfLua",
+		on_require = "fzf-lua",
 		beforeAll = function()
 			local fallback = vim.ui.select
 			local select
@@ -330,6 +419,9 @@ return {
 			local fzf = require("fzf-lua")
 			local actions = require("fzf-lua.actions")
 
+			require("lze").trigger_load("trouble.nvim")
+			local trouble_action = require("trouble.sources.fzf").actions.open
+
 			fzf.setup({
 				"default-title",
 				fzf_colors = true,
@@ -338,6 +430,12 @@ return {
 				},
 				defaults = {
 					formatter = "path.dirname_first",
+				},
+				actions = {
+					files = {
+						true,
+						["ctrl-t"] = trouble_action,
+					},
 				},
 				winopts = {
 					width = 0.8,
@@ -449,13 +547,111 @@ return {
 	},
 
 	{
+		"trouble.nvim",
+		cmd = "Trouble",
+		keys = {
+			{
+				"<leader>xx",
+				"<cmd>Trouble diagnostics toggle<cr>",
+				desc = "Diagnostics",
+			},
+			{
+				"<leader>xX",
+				"<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+				desc = "Buffer diagnostics",
+			},
+			{
+				"<leader>cs",
+				"<cmd>Trouble symbols toggle<cr>",
+				desc = "Document symbols",
+			},
+			{
+				"<leader>cS",
+				"<cmd>Trouble lsp toggle<cr>",
+				desc = "LSP definitions and references",
+			},
+			{
+				"<leader>xL",
+				"<cmd>Trouble loclist toggle<cr>",
+				desc = "Location list",
+			},
+			{
+				"<leader>xQ",
+				"<cmd>Trouble qflist toggle<cr>",
+				desc = "Quickfix list",
+			},
+		},
+		after = function()
+			require("trouble").setup({
+				modes = {
+					lsp = {
+						win = {
+							position = "right",
+						},
+					},
+				},
+			})
+		end,
+	},
+
+	{
+		"todo-comments.nvim",
+		event = { "BufReadPost", "BufNewFile" },
+		cmd = {
+			"TodoQuickFix",
+			"TodoLocList",
+			"TodoFzfLua",
+			"TodoTrouble",
+		},
+		keys = {
+			{
+				"]t",
+				function()
+					require("todo-comments").jump_next()
+				end,
+				desc = "Next todo comment",
+			},
+			{
+				"[t",
+				function()
+					require("todo-comments").jump_prev()
+				end,
+				desc = "Previous todo comment",
+			},
+			{
+				"<leader>xt",
+				"<cmd>Trouble todo toggle<cr>",
+				desc = "Todo comments",
+			},
+			{
+				"<leader>xT",
+				"<cmd>Trouble todo toggle filter = {tag = {TODO,FIX,FIXME}}<cr>",
+				desc = "Todo/Fix/Fixme comments",
+			},
+			{
+				"<leader>st",
+				"<cmd>TodoFzfLua<cr>",
+				desc = "Todo comments",
+			},
+			{
+				"<leader>sT",
+				"<cmd>TodoFzfLua keywords=TODO,FIX,FIXME<cr>",
+				desc = "Todo/Fix/Fixme comments",
+			},
+		},
+		after = function()
+			require("todo-comments").setup({})
+		end,
+	},
+
+	{
 		"nui.nvim",
 		dep_of = { "neo-tree.nvim" },
 	},
 
 	{
 		"plenary.nvim",
-		dep_of = { "neo-tree.nvim", "harpoon2" },
+		dep_of = { "neo-tree.nvim", "harpoon2", "todo-comments.nvim" },
 	},
 
 	{
