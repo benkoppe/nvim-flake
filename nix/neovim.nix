@@ -244,6 +244,9 @@
       cmake-tools-nvim
       clangd_extensions-nvim
       venv-selector-nvim
+      vim-dadbod
+      vim-dadbod-ui
+      vim-dadbod-completion
     ];
 
     runtimePkgs = with pkgs; [
