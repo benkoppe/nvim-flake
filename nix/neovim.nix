@@ -100,6 +100,7 @@
       cmp-buffer
       cmp-path
       cmp_luasnip
+      cmp-git
       luasnip
       friendly-snippets
 
@@ -220,6 +221,7 @@
       sourcekit-lsp
       swift
       bash-language-server
+      shellcheck
       yaml-language-server
       texlab
     ];
