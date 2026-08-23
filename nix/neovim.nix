@@ -238,12 +238,16 @@
       SchemaStore-nvim
       crates-nvim
       rustaceanvim
+      vimtex
     ];
 
     runtimePkgs = with pkgs; [
       # rustaceanvim
       rust-analyzer
       rustfmt
+      # VimTeX
+      pplatex
+      texlive.combined.scheme-medium
     ];
   };
 

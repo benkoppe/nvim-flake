@@ -53,7 +53,7 @@ return {
 					return
 				end
 
-				if has_query(language, "highlights") then
+				if language ~= "latex" and has_query(language, "highlights") then
 					pcall(vim.treesitter.start, buffer, language)
 				end
 
