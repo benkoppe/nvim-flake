@@ -122,6 +122,8 @@ return {
 			local kind_icons = require("config.icons").kinds
 			require("lazydev.integrations.cmp").setup()
 
+			table.insert(defaults.sorting.comparators, 1, require("clangd_extensions.cmp_scores"))
+
 			cmp.setup({
 				completion = {
 					completeopt = "menu,menuone,noinsert",

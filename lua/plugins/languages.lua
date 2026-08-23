@@ -212,4 +212,33 @@ return {
 			require("cmake-tools").setup({})
 		end,
 	},
+
+	{
+		"clangd_extensions.nvim",
+		ft = { "c", "cpp", "objc", "objcpp" },
+		on_require = "clangd_extensions",
+		after = function()
+			require("clangd_extensions").setup({
+				ast = {
+					role_icons = {
+						type = "",
+						declaration = "",
+						expression = "",
+						specifier = "",
+						statement = "",
+						["template argument"] = "",
+					},
+					kind_icons = {
+						Compound = "",
+						Recovery = "",
+						TranslationUnit = "",
+						PackExpansion = "",
+						TemplateTypeParm = "",
+						TemplateTemplateParm = "",
+						TemplateParamObject = "",
+					},
+				},
+			})
+		end,
+	},
 }
