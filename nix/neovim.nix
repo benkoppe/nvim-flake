@@ -65,12 +65,15 @@
       lualine-nvim
       which-key-nvim
       persistence-nvim
+      harpoon2
+      mini-diff
 
       nui-nvim
       plenary-nvim
     ];
 
     runtimePkgs = with pkgs; [
+      git
       ripgrep
       fd
       fzf

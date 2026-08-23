@@ -26,6 +26,36 @@ local function root_picker(name, opts)
 	end
 end
 
+local harpoon_keys = {
+	{
+		"<leader>H",
+		function()
+			require("harpoon"):list():add()
+		end,
+		desc = "Harpoon file",
+	},
+	{
+		"<leader>h",
+		function()
+			local harpoon = require("harpoon")
+			harpoon.ui:toggle_quick_menu(harpoon:list())
+		end,
+		desc = "Harpoon quick menu",
+	},
+}
+
+for index = 1, 9 do
+	local target = index
+
+	harpoon_keys[#harpoon_keys + 1] = {
+		"<leader>" .. target,
+		function()
+			require("harpoon"):list():select(target)
+		end,
+		desc = "Harpoon to file " .. target,
+	}
+end
+
 -- Open neo-tree automatically when Neovim is started with a directory.
 vim.api.nvim_create_autocmd("BufEnter", {
 	group = vim.api.nvim_create_augroup("config_open_directory", { clear = true }),
@@ -361,13 +391,71 @@ return {
 	},
 
 	{
+		"harpoon2",
+		keys = harpoon_keys,
+		after = function()
+			require("harpoon"):setup({
+				settings = {
+					save_on_toggle = true,
+				},
+			})
+		end,
+	},
+
+	{
+		"mini.diff",
+		event = { "BufReadPre", "BufNewFile" },
+		keys = {
+			{
+				"<leader>go",
+				function()
+					require("mini.diff").toggle_overlay(0)
+				end,
+				desc = "Toggle mini.diff overlay",
+			},
+		},
+		after = function()
+			require("mini.diff").setup({
+				view = {
+					style = "sign",
+					signs = {
+						add = "▎",
+						change = "▎",
+						delete = "",
+					},
+				},
+			})
+
+			Snacks.toggle({
+				name = "Mini Diff Signs",
+				get = function()
+					return vim.g.minidiff_disable ~= true
+				end,
+				set = function(enabled)
+					vim.g.minidiff_disable = not enabled
+
+					if enabled then
+						require("mini.diff").enable(0)
+					else
+						require("mini.diff").disable(0)
+					end
+
+					vim.defer_fn(function()
+						vim.cmd.redraw({ bang = true })
+					end, 200)
+				end,
+			}):map("<leader>uG")
+		end,
+	},
+
+	{
 		"nui.nvim",
 		dep_of = { "neo-tree.nvim" },
 	},
 
 	{
 		"plenary.nvim",
-		dep_of = { "neo-tree.nvim" },
+		dep_of = { "neo-tree.nvim", "harpoon2" },
 	},
 
 	{
