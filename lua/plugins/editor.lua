@@ -490,6 +490,7 @@ return {
 
 	{
 		"harpoon2",
+		which_key = "harpoon",
 		keys = harpoon_keys,
 		after = function()
 			require("harpoon"):setup({
