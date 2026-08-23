@@ -148,4 +148,68 @@ return {
 			}):map("<leader>um")
 		end,
 	},
+
+	{
+		"cmake-tools.nvim",
+		cmd = {
+			"CMakeGenerate",
+			"CMakeClean",
+			"CMakeBuild",
+			"CMakeQuickBuild",
+			"CMakeInstall",
+			"CMakeStopExecutor",
+			"CMakeStopRunner",
+			"CMakeCloseExecutor",
+			"CMakeCloseRunner",
+			"CMakeOpenExecutor",
+			"CMakeOpenRunner",
+			"CMakeOpenCache",
+			"CMakeRun",
+			"CMakeQuickRun",
+			"CMakeRunCurrentFile",
+			"CMakeBuildCurrentFile",
+			"CMakeLaunchArgs",
+			"CMakeSelectBuildType",
+			"CMakeSelectKit",
+			"CMakeSelectConfigurePreset",
+			"CMakeSelectBuildPreset",
+			"CMakeSelectTestPreset",
+			"CMakeSelectBuildTarget",
+			"CMakeSelectLaunchTarget",
+			"CMakeTargetSettings",
+			"CMakeSettings",
+			"CMakeSelectCwd",
+			"CMakeSelectBuildDir",
+			"CMakeRunTest",
+			"CMakeQuickStart",
+		},
+		beforeAll = function()
+			local loaded = false
+
+			local function load_for_project()
+				if loaded then
+					return
+				end
+
+				local cmake_lists = vim.fs.joinpath(vim.uv.cwd(), "CMakeLists.txt")
+
+				if vim.fn.filereadable(cmake_lists) == 1 then
+					loaded = true
+					require("lze").trigger_load("cmake-tools.nvim")
+				end
+			end
+
+			load_for_project()
+
+			vim.api.nvim_create_autocmd("DirChanged", {
+				group = vim.api.nvim_create_augroup("config_cmake_tools", {
+					clear = true,
+				}),
+				callback = load_for_project,
+			})
+		end,
+		after = function()
+			require("cmake-tools").setup({})
+		end,
+	},
 }

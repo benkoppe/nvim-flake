@@ -241,6 +241,7 @@
       vimtex
       render-markdown-nvim
       markdown-preview-nvim
+      cmake-tools-nvim
     ];
 
     runtimePkgs = with pkgs; [
@@ -252,6 +253,9 @@
       texlive.combined.scheme-medium
       # Markdown preview
       nodejs
+      # CMake Tools
+      cmake
+      ninja
     ];
   };
 

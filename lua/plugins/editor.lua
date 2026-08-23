@@ -689,7 +689,12 @@ return {
 
 	{
 		"plenary.nvim",
-		dep_of = { "neo-tree.nvim", "harpoon2", "todo-comments.nvim" },
+		dep_of = {
+			"neo-tree.nvim",
+			"harpoon2",
+			"todo-comments.nvim",
+			"cmake-tools.nvim",
+		},
 	},
 
 	{
