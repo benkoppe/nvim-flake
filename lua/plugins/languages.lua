@@ -1,3 +1,15 @@
+local with_after = require("lzextras").loaders.with_after
+
+local sql_filetypes = {
+	"sql",
+	"mysql",
+	"plsql",
+}
+
+-- Disable Neovim's legacy SQL completion while retaining syntax keywords.
+vim.g.omni_sql_default_compl_type = "syntax"
+vim.g.loaded_sql_completion = true
+
 return {
 	{
 		"SchemaStore.nvim",
@@ -262,6 +274,65 @@ return {
 					override_notify = false,
 				},
 			})
+		end,
+	},
+
+	{
+		"vim-dadbod",
+		cmd = "DB",
+		dep_of = {
+			"vim-dadbod-ui",
+			"vim-dadbod-completion",
+		},
+	},
+
+	{
+		"vim-dadbod-completion",
+		ft = sql_filetypes,
+		load = with_after,
+		before = function()
+			-- Its after/plugin script registers directly with nvim-cmp.
+			require("lze").trigger_load("nvim-cmp")
+		end,
+		after = function()
+			local cmp = require("cmp")
+			local sources = vim.deepcopy(cmp.get_config().sources)
+
+			table.insert(sources, {
+				name = "vim-dadbod-completion",
+			})
+
+			cmp.setup.filetype(sql_filetypes, {
+				sources = sources,
+			})
+		end,
+	},
+
+	{
+		"vim-dadbod-ui",
+		cmd = {
+			"DBUI",
+			"DBUIToggle",
+			"DBUIAddConnection",
+			"DBUIFindBuffer",
+		},
+		keys = {
+			{
+				"<leader>D",
+				"<cmd>DBUIToggle<cr>",
+				desc = "Toggle database UI",
+			},
+		},
+		before = function()
+			local data_path = vim.fn.stdpath("data")
+
+			vim.g.db_ui_auto_execute_table_helpers = 1
+			vim.g.db_ui_execute_on_save = false
+			vim.g.db_ui_save_location = data_path .. "/dadbod_ui"
+			vim.g.db_ui_show_database_icon = true
+			vim.g.db_ui_tmp_query_location = data_path .. "/dadbod_ui/tmp"
+			vim.g.db_ui_use_nerd_fonts = true
+			vim.g.db_ui_use_nvim_notify = true
 		end,
 	},
 }
