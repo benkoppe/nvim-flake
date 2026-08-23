@@ -101,6 +101,7 @@
       cmp-path
       cmp_luasnip
       cmp-git
+      tailwind-tools-nvim
       luasnip
       friendly-snippets
 

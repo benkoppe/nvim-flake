@@ -100,6 +100,10 @@ return {
 			require("cmp_git").setup()
 		end,
 	},
+	{
+		"tailwind-tools.nvim",
+		dep_of = "nvim-cmp",
+	},
 
 	{
 		"nvim-cmp",
@@ -115,6 +119,7 @@ return {
 			local cmp = require("cmp")
 			local luasnip = require("luasnip")
 			local defaults = require("cmp.config.default")()
+			local kind_icons = require("config.icons").kinds
 			require("lazydev.integrations.cmp").setup()
 
 			cmp.setup({
@@ -169,11 +174,36 @@ return {
 					{ name = "buffer" },
 				}),
 				formatting = {
-					format = function(_, item)
-						local icon = MiniIcons.get("lsp", item.kind)
+					format = function(entry, item)
+						item = require("tailwind-tools.cmp").lspkind_format(entry, item)
 
-						if icon then
-							item.kind = icon .. " " .. item.kind
+						local tailwind_group = item.kind_hl_group
+						local is_tailwind_color = tailwind_group and vim.startswith(tailwind_group, "TailwindColor")
+
+						if is_tailwind_color then
+							local highlight = vim.api.nvim_get_hl(0, {
+								name = tailwind_group,
+								link = false,
+							})
+
+							if highlight.fg then
+								local square_group = tailwind_group .. "Square"
+								local color = string.format("#%06x", highlight.fg)
+
+								vim.api.nvim_set_hl(0, square_group, {
+									fg = color,
+									bg = color,
+								})
+
+								item.kind = "XX"
+								item.kind_hl_group = square_group
+							end
+						else
+							local icon = kind_icons[item.kind]
+
+							if icon then
+								item.kind = icon .. item.kind
+							end
 						end
 
 						local widths = {
