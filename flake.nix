@@ -32,6 +32,7 @@
         let
           pkgs-stable = inputs.nixpkgs-stable.legacyPackages.${system};
           llm-pkgs = inputs.llm-agents.packages.${system};
+          profiles = import ./nix/profiles.nix;
 
           neovimModules = [
             ./nix/neovim.nix
@@ -43,6 +44,8 @@
               };
             }
           ];
+
+          evalNeovim = profile: inputs.nix-wrapper-modules.lib.evalPackage (neovimModules ++ [ profile ]);
         in
         {
           formatter = pkgs.writeShellApplication {
@@ -75,11 +78,14 @@
           };
 
           packages = {
-            default = inputs.nix-wrapper-modules.lib.evalPackage neovimModules;
+            default = evalNeovim profiles.default;
+            full = evalNeovim profiles.full;
+            minimal = evalNeovim profiles.minimal;
 
             dev = inputs.nix-wrapper-modules.lib.evalPackage (
               neovimModules
               ++ [
+                profiles.full
                 ({ lib, ... }: {
                   settings.config_directory = lib.mkForce (
                     lib.generators.mkLuaInline ''

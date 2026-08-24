@@ -1,4 +1,5 @@
 local with_after = require("lzextras").loaders.with_after
+local nix = require("config.nix")
 
 return {
 	{
@@ -120,9 +121,25 @@ return {
 			local luasnip = require("luasnip")
 			local defaults = require("cmp.config.default")()
 			local kind_icons = require("config.icons").kinds
-			require("lazydev.integrations.cmp").setup()
 
-			table.insert(defaults.sorting.comparators, 1, require("clangd_extensions.cmp_scores"))
+			if nix.spec_enabled("lsp") then
+				require("lazydev.integrations.cmp").setup()
+			end
+
+			if nix.spec_enabled("languages") then
+				table.insert(defaults.sorting.comparators, 1, require("clangd_extensions.cmp_scores"))
+			end
+
+			local primary_sources = {
+				{ name = "path" },
+				{ name = "luasnip" },
+				{ name = "git" },
+			}
+
+			if nix.spec_enabled("lsp") then
+				table.insert(primary_sources, 1, { name = "nvim_lsp" })
+				table.insert(primary_sources, 1, { name = "lazydev" })
+			end
 
 			cmp.setup({
 				completion = {
@@ -166,13 +183,7 @@ return {
 						end
 					end, { "i", "s" }),
 				}),
-				sources = cmp.config.sources({
-					{ name = "lazydev" },
-					{ name = "nvim_lsp" },
-					{ name = "path" },
-					{ name = "luasnip" },
-					{ name = "git" },
-				}, {
+				sources = cmp.config.sources(primary_sources, {
 					{ name = "buffer" },
 				}),
 				formatting = {
