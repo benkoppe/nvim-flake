@@ -34,6 +34,7 @@
     config_directory = lib.mkDefault ../.;
 
     profile = profile.name;
+    extra_themes = profile.extraThemes;
 
     php_debug_adapter = lib.mkIf profile.developmentFeatures "${pkgs.vscode-extensions.xdebug.php-debug}/share/vscode/extensions/xdebug.php-debug/out/phpDebug.js";
 
@@ -56,14 +57,17 @@
     runtimeDeps = false;
     pluginDeps = false;
 
-    data = with pkgs.vimPlugins; [
-      lze
-      lzextras
+    data =
+      with pkgs.vimPlugins;
+      [
+        lze
+        lzextras
 
-      mini-icons
-      snacks-nvim
-      tokyonight-nvim
-    ];
+        mini-icons
+        snacks-nvim
+        tokyonight-nvim
+      ]
+      ++ lib.optionals profile.extraThemes [ catppuccin-nvim ];
   };
 
   specs.editor = {

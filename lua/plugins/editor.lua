@@ -433,6 +433,13 @@ return {
 				desc = "Selection (cwd)",
 				mode = "x",
 			},
+
+				-- UI
+				{
+					"<leader>uC",
+					fzf_picker("colorschemes"),
+					desc = "Colorscheme with preview",
+				},
 		},
 		after = function()
 			local fzf = require("fzf-lua")
@@ -780,7 +787,7 @@ return {
 					mappings = {
 						["l"] = "open",
 						["h"] = "close_node",
-						["<Space>"] = "none",
+						["<space>"] = "none",
 						["Y"] = {
 							function(state)
 								vim.fn.setreg("+", state.tree:get_node():get_id(), "c")
