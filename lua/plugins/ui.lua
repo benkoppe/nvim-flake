@@ -1,7 +1,7 @@
 local root = require("config.root")
 local nix = require("config.nix")
 
-return {
+local plugins = {
 	{
 		"mini.icons",
 		lazy = false,
@@ -181,6 +181,7 @@ return {
 		lazy = false,
 		priority = 1000,
 		after = function()
+			---@diagnostic disable-next-line: missing-fields -- TokyoNight accepts partial setup options.
 			require("tokyonight").setup({
 				style = nix.setting("profile", "full") == "minimal" and "night" or "moon",
 			})
@@ -392,3 +393,29 @@ return {
 		end,
 	},
 }
+
+if nix.setting("extra_themes", false) then
+	table.insert(plugins, {
+		"catppuccin",
+		lazy = false,
+		priority = 1000,
+		after = function()
+			require("catppuccin").setup({
+				integrations = {
+					cmp = true,
+					flash = true,
+					fzf = true,
+					grug_far = true,
+					lsp_trouble = true,
+					mini = true,
+					neotree = true,
+					snacks = true,
+					treesitter_context = true,
+					which_key = true,
+				},
+			})
+		end,
+	})
+end
+
+return plugins
