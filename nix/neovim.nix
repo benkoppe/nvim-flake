@@ -32,7 +32,7 @@
   info.specs = builtins.mapAttrs (_: spec: spec.enable) config.specs;
 
   settings = {
-    config_directory = lib.mkDefault self;
+    config_directory = lib.mkDefault self.outPath;
 
     profile = profile.name;
     extra_themes = profile.extraThemes;
