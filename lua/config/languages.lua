@@ -1,36 +1,5 @@
 local M = {}
 
-local servers = {
-	"basedpyright",
-	"bashls",
-	"clangd",
-	"cssls",
-	"denols",
-	"docker_compose_language_service",
-	"dockerls",
-	"fsautocomplete",
-	"gopls",
-	"html",
-	"jsonls",
-	"kotlin_language_server",
-	"nixd",
-	"nushell",
-	"ocamllsp",
-	"phpactor",
-	"prismals",
-	"rubocop",
-	"ruff",
-	"sourcekit",
-	"svelte",
-	"tailwindcss",
-	"taplo",
-	"texlab",
-	"vtsls",
-	"vue_ls",
-	"yamlls",
-	"zls",
-}
-
 function M.setup()
 	vim.lsp.config("clangd", {
 		root_markers = {
@@ -214,7 +183,7 @@ function M.setup()
 		},
 	})
 
-	return servers
+	return require("config.nix").setting("lsp_servers", {})
 end
 
 return M

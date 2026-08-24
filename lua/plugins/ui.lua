@@ -1,4 +1,5 @@
 local root = require("config.root")
+local nix = require("config.nix")
 
 return {
 	{
@@ -181,7 +182,7 @@ return {
 		priority = 1000,
 		after = function()
 			require("tokyonight").setup({
-				style = "moon",
+				style = nix.setting("profile", "full") == "minimal" and "night" or "moon",
 			})
 
 			vim.cmd.colorscheme("tokyonight")

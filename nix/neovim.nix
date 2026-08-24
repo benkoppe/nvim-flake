@@ -5,12 +5,19 @@
   llm-pkgs,
   wlib,
   lib,
+  profile,
   ...
 }:
 {
   imports = [ wlib.wrapperModules.neovim ];
 
   specMods = {
+    options.lspServers = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = "LSP servers associated with this plugin spec.";
+    };
+
     options.runtimePkgs = options.runtimePkgs // {
       description = ''
         Runtime packages associated with this plugin spec.
@@ -21,27 +28,27 @@
 
   runtimePkgs = config.specCollect (packages: spec: packages ++ (spec.runtimePkgs or [ ])) [ ];
 
-  settings = {
-    aliases = [
-      # "vi"
-      # "vim"
-      "v"
-    ];
+  info.specs = builtins.mapAttrs (_: spec: spec.enable) config.specs;
 
+  settings = {
     config_directory = lib.mkDefault ../.;
 
-    php_debug_adapter = "${pkgs.vscode-extensions.xdebug.php-debug}/share/vscode/extensions/xdebug.php-debug/out/phpDebug.js";
+    profile = profile.name;
 
-    java_debug_bundles = "${pkgs.vscode-extensions.vscjava.vscode-java-debug}/share/vscode/extensions/vscjava.vscode-java-debug/server/com.microsoft.java.debug.plugin-*.jar";
+    php_debug_adapter = lib.mkIf profile.developmentFeatures "${pkgs.vscode-extensions.xdebug.php-debug}/share/vscode/extensions/xdebug.php-debug/out/phpDebug.js";
 
-    java_test_bundles = "${pkgs.vscode-extensions.vscjava.vscode-java-test}/share/vscode/extensions/vscjava.vscode-java-test/server/*.jar";
+    java_debug_bundles = lib.mkIf profile.developmentFeatures "${pkgs.vscode-extensions.vscjava.vscode-java-debug}/share/vscode/extensions/vscjava.vscode-java-debug/server/com.microsoft.java.debug.plugin-*.jar";
+
+    java_test_bundles = lib.mkIf profile.developmentFeatures "${pkgs.vscode-extensions.vscjava.vscode-java-test}/share/vscode/extensions/vscjava.vscode-java-test/server/*.jar";
+
+    lsp_servers = config.specCollect (servers: spec: servers ++ (spec.lspServers or [ ])) [ ];
   };
 
   hosts = {
-    ruby.nvim-host.enable = true;
-    python3.nvim-host.enable = true;
-    node.nvim-host.enable = true;
-    perl.nvim-host.enable = true;
+    ruby.nvim-host.enable = profile.developmentFeatures;
+    python3.nvim-host.enable = profile.developmentFeatures;
+    node.nvim-host.enable = profile.developmentFeatures;
+    perl.nvim-host.enable = profile.developmentFeatures;
   };
 
   specs.foundation = {
@@ -197,6 +204,7 @@
   };
 
   specs.lsp = {
+    enable = profile.developmentFeatures;
     lazy = true;
     autoconfig = false;
     runtimeDeps = false;
@@ -208,82 +216,119 @@
       inc-rename-nvim
     ];
 
-    runtimePkgs = with pkgs; [
-      # Nix
-      nixd
-
-      # Lua
-      lua-language-server
-
-      # Nushell
-      nushell
-
-      # Python
-      basedpyright
-      ruff
-
-      # Go
-      gopls
-
-      # Containers
-      dockerfile-language-server
-      docker-compose-language-service
-
-      # Web
-      deno
-      vscode-langservers-extracted
-      svelte-language-server
-      tailwindcss-language-server
-      vue-language-server
-      vtsls
-
-      # C, C++
-      clang-tools
-
-      # Swift
-      sourcekit-lsp
-      swift
-
-      # Shell
-      bash-language-server
-
-      # Data formats
-      yaml-language-server
-
-      # TeX
-      texlab
-
-      # Kotlin
-      kotlin-language-server
-
-      # OCaml
-      ocamlPackages.ocaml-lsp
-
-      # PHP
-      phpactor
-
-      # Ruby
-      rubocop
-
-      # Prisma
-      prisma-language-server
-
-      # TOML
-      taplo
-
-      # Zig
-      zls
-
-      # .NET
-      roslyn-ls
-      fsautocomplete
-
-      # Java
-      jdt-language-server
+    lspServers = [
+      "basedpyright"
+      "bashls"
+      "cssls"
+      "denols"
+      "docker_compose_language_service"
+      "dockerls"
+      "gopls"
+      "html"
+      "jsonls"
+      "nixd"
+      "nushell"
+      "ruff"
+      "svelte"
+      "tailwindcss"
+      "vtsls"
+      "vue_ls"
+      "yamlls"
+    ]
+    ++ lib.optionals profile.extendedTools [
+      "clangd"
+      "fsautocomplete"
+      "kotlin_language_server"
+      "ocamllsp"
+      "phpactor"
+      "prismals"
+      "rubocop"
+      "sourcekit"
+      "taplo"
+      "texlab"
+      "zls"
     ];
+
+    runtimePkgs =
+      with pkgs;
+      [
+        # Nix
+        nixd
+
+        # Lua
+        lua-language-server
+
+        # Nushell
+        nushell
+
+        # Python
+        basedpyright
+        ruff
+
+        # Go
+        gopls
+
+        # Containers
+        dockerfile-language-server
+        docker-compose-language-service
+
+        # Web
+        deno
+        vscode-langservers-extracted
+        svelte-language-server
+        tailwindcss-language-server
+        vue-language-server
+        vtsls
+
+        # Shell
+        bash-language-server
+
+        # Data formats
+        yaml-language-server
+      ]
+      ++ lib.optionals profile.extendedTools [
+        # C, C++
+        clang-tools
+
+        # Swift
+        sourcekit-lsp
+        swift
+
+        # TeX
+        texlab
+
+        # Kotlin
+        kotlin-language-server
+
+        # OCaml
+        ocamlPackages.ocaml-lsp
+
+        # PHP
+        phpactor
+
+        # Ruby
+        rubocop
+
+        # Prisma
+        prisma-language-server
+
+        # TOML
+        taplo
+
+        # Zig
+        zls
+
+        # .NET
+        roslyn-ls
+        fsautocomplete
+
+        # Java
+        jdt-language-server
+      ];
   };
 
   specs.languages = {
+    enable = profile.developmentFeatures;
     lazy = true;
     autoconfig = false;
     runtimeDeps = false;
@@ -306,39 +351,43 @@
       nvim-jdtls
     ];
 
-    runtimePkgs = with pkgs; [
-      # rustaceanvim
-      rust-analyzer
-      rustfmt
+    runtimePkgs =
+      with pkgs;
+      [
+        # rustaceanvim
+        rust-analyzer
+        rustfmt
 
-      # VimTeX
-      pplatex
-      (texliveSmall.withPackages (tex: [
-        tex.latexmk
-      ]))
+        # Markdown preview
+        nodejs
+      ]
+      ++ lib.optionals profile.extendedTools [
+        # VimTeX
+        pplatex
+        (texliveSmall.withPackages (tex: [
+          tex.latexmk
+        ]))
 
-      # Markdown preview
-      nodejs
+        # CMake Tools
+        cmake
+        ninja
 
-      # CMake Tools
-      cmake
-      ninja
+        # PHP
+        php
 
-      # PHP
-      php
+        # Zig
+        zig
 
-      # Zig
-      zig
+        # .NET
+        dotnet-sdk
 
-      # .NET
-      dotnet-sdk
-
-      # Java
-      jdk21
-    ];
+        # Java
+        jdk21
+      ];
   };
 
   specs.debugging = {
+    enable = profile.developmentFeatures;
     lazy = true;
     autoconfig = false;
     runtimeDeps = false;
@@ -353,32 +402,36 @@
       nvim-dap-python
     ];
 
-    runtimePkgs = with pkgs; [
-      # Rust, C, C++
-      vscode-extensions.vadimcn.vscode-lldb.adapter
+    runtimePkgs =
+      with pkgs;
+      [
+        # Go
+        delve
 
-      # Go
-      delve
+        # Python
+        python3Packages.debugpy
 
-      # Python
-      python3Packages.debugpy
+        # JS and TS
+        vscode-js-debug
+        nodejs
+        tsx
+      ]
+      ++ lib.optionals profile.extendedTools [
+        # Rust, C, C++
+        vscode-extensions.vadimcn.vscode-lldb.adapter
 
-      # JS and TS
-      vscode-js-debug
-      nodejs
-      tsx
+        # Haskell
+        haskellPackages.ghc
+        (haskell.lib.justStaticExecutables haskellPackages.haskell-debug-adapter)
+        haskellPackages.ghci-dap
 
-      # Haskell
-      haskellPackages.ghc
-      (haskell.lib.justStaticExecutables haskellPackages.haskell-debug-adapter)
-      haskellPackages.ghci-dap
-
-      # .NET
-      netcoredbg
-    ];
+        # .NET
+        netcoredbg
+      ];
   };
 
   specs.formatting = {
+    enable = profile.developmentFeatures;
     lazy = true;
     autoconfig = false;
     runtimeDeps = false;
@@ -388,56 +441,60 @@
       conform-nvim
     ];
 
-    runtimePkgs = with pkgs; [
-      # Nix
-      nixfmt
+    runtimePkgs =
+      with pkgs;
+      [
+        # Nix
+        nixfmt
 
-      # Lua
-      stylua
+        # Lua
+        stylua
 
-      # Web
-      prettierd
-      oxfmt
+        # Web
+        prettierd
+        oxfmt
 
-      # Python
-      black
+        # Python
+        black
 
-      # Go
-      gofumpt
-      gotools
+        # Go
+        gofumpt
+        gotools
 
-      # Haskell
-      fourmolu
-      pkgs.haskellPackages.cabal-fmt
+        # Shell
+        shfmt
+      ]
+      ++ lib.optionals profile.extendedTools [
+        # Haskell
+        fourmolu
+        haskellPackages.cabal-fmt
 
-      # Kotlin
-      ktlint
+        # Kotlin
+        ktlint
 
-      # Ruby
-      rubocop
+        # Ruby
+        rubocop
 
-      # Shell
-      shfmt
+        # SQL
+        sqlfluff
 
-      # SQL
-      sqlfluff
+        # OCaml
+        ocamlPackages.ocamlformat
 
-      # OCaml
-      ocamlPackages.ocamlformat
+        # PHP
+        phpPackages.php-cs-fixer
 
-      # PHP
-      phpPackages.php-cs-fixer
+        # .NET
+        csharpier
+        fantomas
 
-      # .NET
-      csharpier
-      fantomas
-
-      # Zig
-      zig
-    ];
+        # Zig
+        zig
+      ];
   };
 
   specs.linting = {
+    enable = profile.developmentFeatures;
     lazy = true;
     autoconfig = false;
     runtimeDeps = false;
@@ -447,36 +504,40 @@
       nvim-lint
     ];
 
-    runtimePkgs = with pkgs; [
-      # Nix
-      deadnix
-      statix
+    runtimePkgs =
+      with pkgs;
+      [
+        # Nix
+        deadnix
+        statix
 
-      # Go
-      go
-      golangci-lint
+        # Markdown
+        markdownlint-cli2
 
-      # Haskell
-      hlint
+        # Shell
+        shellcheck
+      ]
+      ++ lib.optionals profile.extendedTools [
+        # Go
+        go
+        golangci-lint
 
-      # Markdown
-      markdownlint-cli2
+        # Haskell
+        hlint
 
-      # PHP
-      phpPackages.php-codesniffer
+        # PHP
+        phpPackages.php-codesniffer
 
-      # Kotlin
-      ktlint
+        # Kotlin
+        ktlint
 
-      # Shell
-      shellcheck
-
-      # SQL
-      sqlfluff
-    ];
+        # SQL
+        sqlfluff
+      ];
   };
 
   specs.ai = {
+    enable = profile.developmentFeatures;
     lazy = true;
     autoconfig = false;
     runtimeDeps = false;
