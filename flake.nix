@@ -52,7 +52,7 @@
           formatter = pkgs.writeShellApplication {
             name = "format";
             runtimeInputs = builtins.attrValues {
-              inherit (pkgs)
+              inherit (pkgs-stable)
                 nixfmt
                 deadnix
                 statix
