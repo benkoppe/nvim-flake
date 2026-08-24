@@ -30,6 +30,8 @@
     ];
 
     config_directory = lib.mkDefault ../.;
+
+    php_debug_adapter = "${pkgs.vscode-extensions.xdebug.php-debug}/share/vscode/extensions/xdebug.php-debug/out/phpDebug.js";
   };
 
   hosts = {
@@ -225,6 +227,20 @@
       shellcheck
       yaml-language-server
       texlab
+
+      kotlin-language-server
+      ocamlPackages.ocaml-lsp
+      phpactor
+      prisma-language-server
+      taplo
+      zls
+
+      # .NET
+      roslyn-ls
+      fsautocomplete
+
+      # Java
+      jdt-language-server
     ];
   };
 
@@ -263,6 +279,14 @@
       # CMake Tools
       cmake
       ninja
+      # PHP
+      php
+      # Zig
+      zig
+      # .NET
+      dotnet-sdk
+      # Java
+      jdk21
     ];
   };
 
@@ -327,6 +351,8 @@
       rubocop
       shfmt
       sqlfluff
+      ocamlPackages.ocamlformat
+      phpPackages.php-cs-fixer
     ];
   };
 
@@ -347,6 +373,7 @@
       golangci-lint
       hlint
       markdownlint-cli2
+      phpPackages.php-codesniffer
     ];
   };
 

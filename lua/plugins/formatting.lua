@@ -80,6 +80,10 @@ return {
 				nix = { "nixfmt" },
 				ruby = { "rubocop" },
 
+				ocaml = { "ocamlformat" },
+				php = { "php_cs_fixer" },
+				zig = { "zigfmt" },
+
 				sql = { "sqlfluff" },
 				mysql = { "sqlfluff" },
 				plsql = { "sqlfluff" },

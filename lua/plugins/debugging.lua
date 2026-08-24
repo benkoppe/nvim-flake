@@ -310,6 +310,27 @@ return {
 			dap.configurations.c = vim.deepcopy(native_configurations)
 			dap.configurations.cpp = vim.deepcopy(native_configurations)
 
+			dap.configurations.zig = vim.deepcopy(native_configurations)
+
+			local nix_info = require(vim.g.nix_info_plugin_name)
+
+			dap.adapters.php = {
+				type = "executable",
+				command = "node",
+				args = {
+					nix_info.settings.php_debug_adapter,
+				},
+			}
+
+			dap.configurations.php = {
+				{
+					type = "php",
+					request = "launch",
+					name = "Listen for Xdebug",
+					port = 9003,
+				},
+			}
+
 			require("dap-go").setup({})
 			require("dap-python").setup("debugpy-adapter")
 
