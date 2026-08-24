@@ -396,7 +396,7 @@ local plugins = {
 
 if nix.setting("extra_themes", false) then
 	table.insert(plugins, {
-		"catppuccin",
+		"catppuccin-nvim",
 		lazy = false,
 		priority = 1000,
 		after = function()
