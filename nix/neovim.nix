@@ -2,6 +2,7 @@
   config,
   options,
   pkgs,
+  self,
   llm-pkgs,
   wlib,
   lib,
@@ -31,7 +32,7 @@
   info.specs = builtins.mapAttrs (_: spec: spec.enable) config.specs;
 
   settings = {
-    config_directory = lib.mkDefault ../.;
+    config_directory = lib.mkDefault self;
 
     profile = profile.name;
     extra_themes = profile.extraThemes;
