@@ -39,6 +39,7 @@
             {
               inherit pkgs;
               _module.args = {
+                inherit (inputs) self;
                 inherit pkgs-stable;
                 inherit llm-pkgs;
               };
