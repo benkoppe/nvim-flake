@@ -370,7 +370,7 @@
 
       # Haskell
       haskellPackages.ghc
-      haskellPackages.haskell-debug-adapter
+      (haskell.lib.justStaticExecutables haskellPackages.haskell-debug-adapter)
       haskellPackages.ghci-dap
 
       # .NET
