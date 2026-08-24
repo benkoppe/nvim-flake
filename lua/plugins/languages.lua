@@ -278,6 +278,142 @@ return {
 	},
 
 	{
+		"roslyn.nvim",
+		lazy = false,
+		after = function()
+			require("roslyn").setup({
+				broad_search = true,
+			})
+		end,
+	},
+
+	{
+		"nvim-jdtls",
+		ft = "java",
+		after = function()
+			local jdtls = require("jdtls")
+			local nix_info = require(vim.g.nix_info_plugin_name)
+			local bundles = vim.fn.glob(nix_info.settings.java_debug_bundles, false, true)
+
+			vim.list_extend(bundles, vim.fn.glob(nix_info.settings.java_test_bundles, false, true))
+
+			local function java_root(filename)
+				return vim.fs.root(filename, {
+					"mvnw",
+					"gradlew",
+					"settings.gradle",
+					"settings.gradle.kts",
+					".git",
+				}) or vim.fs.root(filename, {
+					"build.xml",
+					"pom.xml",
+					"build.gradle",
+					"build.gradle.kts",
+				})
+			end
+
+			local function attach_jdtls()
+				local filename = vim.api.nvim_buf_get_name(0)
+				local root_dir = java_root(filename)
+
+				if not root_dir then
+					return
+				end
+
+				local config = vim.deepcopy(vim.lsp.config.jdtls)
+				local project_name = vim.fs.basename(root_dir) .. "-" .. vim.fn.sha256(root_dir):sub(1, 8)
+				local workspace_dir = vim.fs.joinpath(vim.fn.stdpath("cache"), "jdtls", project_name)
+
+				config.root_dir = root_dir
+				config.cmd = {
+					"jdtls",
+					"-data",
+					workspace_dir,
+				}
+				config.capabilities = vim.deepcopy(vim.lsp.config["*"].capabilities)
+				config.init_options = {
+					bundles = bundles,
+				}
+				config.settings = {
+					java = {
+						inlayHints = {
+							parameterNames = {
+								enabled = "all",
+							},
+						},
+					},
+				}
+
+				jdtls.start_or_attach(config)
+			end
+
+			local group = vim.api.nvim_create_augroup("config_jdtls", {
+				clear = true,
+			})
+
+			vim.api.nvim_create_autocmd("LspAttach", {
+				group = group,
+				callback = function(event)
+					local client = vim.lsp.get_client_by_id(event.data.client_id)
+
+					if not client or client.name ~= "jdtls" then
+						return
+					end
+
+					require("lze").trigger_load("nvim-dap")
+					jdtls.setup_dap({
+						hotcodereplace = "auto",
+					})
+					require("jdtls.dap").setup_dap_main_class_configs()
+
+					local function map(mode, lhs, rhs, desc)
+						vim.keymap.set(mode, lhs, rhs, {
+							buffer = event.buf,
+							silent = true,
+							desc = desc,
+						})
+					end
+
+					map("n", "<leader>cxv", jdtls.extract_variable_all, "Extract variable")
+					map("n", "<leader>cxc", jdtls.extract_constant, "Extract constant")
+					map("n", "<leader>cgs", jdtls.super_implementation, "Goto super implementation")
+					map("n", "<leader>cgS", require("jdtls.tests").goto_subjects, "Goto test subjects")
+					map("n", "<leader>co", jdtls.organize_imports, "Organize imports")
+
+					map("x", "<leader>cxm", function()
+						jdtls.extract_method(true)
+					end, "Extract method")
+
+					map("x", "<leader>cxv", function()
+						jdtls.extract_variable_all(true)
+					end, "Extract variable")
+
+					map("x", "<leader>cxc", function()
+						jdtls.extract_constant(true)
+					end, "Extract constant")
+
+					map("n", "<leader>dJt", function()
+						require("jdtls.dap").test_nearest_method()
+					end, "Debug nearest Java test")
+
+					map("n", "<leader>dJc", function()
+						require("jdtls.dap").test_class()
+					end, "Debug Java test class")
+				end,
+			})
+
+			vim.api.nvim_create_autocmd("FileType", {
+				group = group,
+				pattern = "java",
+				callback = attach_jdtls,
+			})
+
+			-- Loading on FileType happens after the first Java event.
+			attach_jdtls()
+		end,
+	},
+
+	{
 		"vim-dadbod",
 		cmd = "DB",
 		dep_of = {

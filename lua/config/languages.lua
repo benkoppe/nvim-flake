@@ -8,6 +8,7 @@ local servers = {
 	"denols",
 	"docker_compose_language_service",
 	"dockerls",
+	"fsautocomplete",
 	"gopls",
 	"html",
 	"jsonls",

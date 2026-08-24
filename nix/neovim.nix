@@ -2,7 +2,6 @@
   config,
   options,
   pkgs,
-  pkgs-stable,
   llm-pkgs,
   wlib,
   lib,
@@ -32,6 +31,10 @@
     config_directory = lib.mkDefault ../.;
 
     php_debug_adapter = "${pkgs.vscode-extensions.xdebug.php-debug}/share/vscode/extensions/xdebug.php-debug/out/phpDebug.js";
+
+    java_debug_bundles = "${pkgs.vscode-extensions.vscjava.vscode-java-debug}/share/vscode/extensions/vscjava.vscode-java-debug/server/com.microsoft.java.debug.plugin-*.jar";
+
+    java_test_bundles = "${pkgs.vscode-extensions.vscjava.vscode-java-test}/share/vscode/extensions/vscjava.vscode-java-test/server/*.jar";
   };
 
   hosts = {
@@ -206,33 +209,69 @@
     ];
 
     runtimePkgs = with pkgs; [
+      # Nix
       nixd
+
+      # Lua
       lua-language-server
+
+      # Nushell
       nushell
+
+      # Python
       basedpyright
       ruff
+
+      # Go
       gopls
+
+      # Containers
       dockerfile-language-server
       docker-compose-language-service
+
+      # Web
       deno
       vscode-langservers-extracted
       svelte-language-server
       tailwindcss-language-server
       vue-language-server
       vtsls
+
+      # C, C++
       clang-tools
+
+      # Swift
       sourcekit-lsp
       swift
+
+      # Shell
       bash-language-server
-      shellcheck
+
+      # Data formats
       yaml-language-server
+
+      # TeX
       texlab
 
+      # Kotlin
       kotlin-language-server
+
+      # OCaml
       ocamlPackages.ocaml-lsp
+
+      # PHP
       phpactor
+
+      # Ruby
+      rubocop
+
+      # Prisma
       prisma-language-server
+
+      # TOML
       taplo
+
+      # Zig
       zls
 
       # .NET
@@ -263,28 +302,37 @@
       vim-dadbod
       vim-dadbod-ui
       vim-dadbod-completion
+      roslyn-nvim
+      nvim-jdtls
     ];
 
     runtimePkgs = with pkgs; [
       # rustaceanvim
       rust-analyzer
       rustfmt
+
       # VimTeX
       pplatex
       (texliveSmall.withPackages (tex: [
         tex.latexmk
       ]))
+
       # Markdown preview
       nodejs
+
       # CMake Tools
       cmake
       ninja
+
       # PHP
       php
+
       # Zig
       zig
+
       # .NET
       dotnet-sdk
+
       # Java
       jdk21
     ];
@@ -324,6 +372,9 @@
       haskellPackages.ghc
       haskellPackages.haskell-debug-adapter
       haskellPackages.ghci-dap
+
+      # .NET
+      netcoredbg
     ];
   };
 
@@ -338,21 +389,51 @@
     ];
 
     runtimePkgs = with pkgs; [
+      # Nix
       nixfmt
+
+      # Lua
       stylua
+
+      # Web
       prettierd
       oxfmt
+
+      # Python
       black
+
+      # Go
       gofumpt
       gotools
+
+      # Haskell
       fourmolu
       pkgs.haskellPackages.cabal-fmt
+
+      # Kotlin
       ktlint
+
+      # Ruby
       rubocop
+
+      # Shell
       shfmt
+
+      # SQL
       sqlfluff
+
+      # OCaml
       ocamlPackages.ocamlformat
+
+      # PHP
       phpPackages.php-cs-fixer
+
+      # .NET
+      csharpier
+      fantomas
+
+      # Zig
+      zig
     ];
   };
 
@@ -367,13 +448,31 @@
     ];
 
     runtimePkgs = with pkgs; [
+      # Nix
       deadnix
       statix
+
+      # Go
       go
       golangci-lint
+
+      # Haskell
       hlint
+
+      # Markdown
       markdownlint-cli2
+
+      # PHP
       phpPackages.php-codesniffer
+
+      # Kotlin
+      ktlint
+
+      # Shell
+      shellcheck
+
+      # SQL
+      sqlfluff
     ];
   };
 

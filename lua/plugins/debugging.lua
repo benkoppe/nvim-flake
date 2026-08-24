@@ -331,6 +331,37 @@ return {
 				},
 			}
 
+			dap.adapters.netcoredbg = {
+				type = "executable",
+				command = "netcoredbg",
+				args = { "--interpreter=vscode" },
+				options = {
+					detached = false,
+				},
+			}
+
+			local dotnet_configurations = {
+				{
+					type = "netcoredbg",
+					request = "launch",
+					name = "Launch .NET assembly",
+					program = function()
+						return vim.fn.input("Path to DLL: ", vim.fn.getcwd() .. "/", "file")
+					end,
+					cwd = "${workspaceFolder}",
+				},
+				{
+					type = "netcoredbg",
+					request = "attach",
+					name = "Attach to .NET process",
+					processId = require("dap.utils").pick_process,
+				},
+			}
+
+			dap.configurations.cs = vim.deepcopy(dotnet_configurations)
+			dap.configurations.fsharp = vim.deepcopy(dotnet_configurations)
+			dap.configurations.vb = vim.deepcopy(dotnet_configurations)
+
 			require("dap-go").setup({})
 			require("dap-python").setup("debugpy-adapter")
 

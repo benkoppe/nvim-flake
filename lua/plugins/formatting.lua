@@ -76,6 +76,8 @@ return {
 				haskell = { "fourmolu" },
 				cabal = { "cabal_fmt" },
 
+				cs = { "csharpier" },
+				fsharp = { "fantomas" },
 				kotlin = { "ktlint" },
 				nix = { "nixfmt" },
 				ruby = { "rubocop" },
