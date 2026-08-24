@@ -22,13 +22,6 @@ The flake provides three packages built from the same Lua configuration:
 | `full`    | `nvim`, `v`                 | Every plugin, language tool, debugger, formatter, and linter |
 | `minimal` | `nvim-minimal`, `vi`, `vim` | Fast general editing with the same UI and editing experience |
 
-Install either `default` or `full`, not both, because they intentionally provide the same `nvim` and `v` commands. Either one can be installed alongside `minimal`. A typical shell setup is:
-
-```sh
-export VISUAL=nvim
-export EDITOR=vi
-```
-
 ## To install
 
 Add this flake as an input:
