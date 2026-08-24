@@ -14,6 +14,7 @@ return {
 				sql = { "sqlfluff" },
 				mysql = { "sqlfluff" },
 				plsql = { "sqlfluff" },
+				php = { "phpcs" },
 			}
 
 			-- Match the ANSI fallback used by our conform configuration.

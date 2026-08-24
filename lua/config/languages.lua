@@ -11,17 +11,23 @@ local servers = {
 	"gopls",
 	"html",
 	"jsonls",
+	"kotlin_language_server",
 	"nixd",
 	"nushell",
+	"ocamllsp",
+	"phpactor",
+	"prismals",
 	"rubocop",
 	"ruff",
 	"sourcekit",
 	"svelte",
 	"tailwindcss",
+	"taplo",
 	"texlab",
 	"vtsls",
 	"vue_ls",
 	"yamlls",
+	"zls",
 }
 
 function M.setup()
