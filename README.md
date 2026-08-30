@@ -1,6 +1,6 @@
 # NeoVim Flake
 
-My nvim configuration, packaged with [mnw](https://github.com/Gerg-L/mnw).
+My Neovim configuration, packaged with [nix-wrapper-modules](https://github.com/BirdeeHub/nix-wrapper-modules).
 
 ## Test it out
 
@@ -8,7 +8,19 @@ Using flakes:
 
 ```console
 nix run github:benkoppe/nvim-flake
+nix run github:benkoppe/nvim-flake#full
+nix run github:benkoppe/nvim-flake#minimal
 ```
+
+## Profiles
+
+The flake provides three packages built from the same Lua configuration:
+
+| Package   | Commands                    | Intended use                                                 |
+| --------- | --------------------------- | ------------------------------------------------------------ |
+| `default` | `nvim`, `v`                 | Most features with common language tools bundled             |
+| `full`    | `nvim`, `v`                 | Every plugin, language tool, debugger, formatter, and linter |
+| `minimal` | `nvim-minimal`, `vi`, `vim` | Fast general editing with the same UI and editing experience |
 
 ## To install
 
@@ -30,11 +42,13 @@ Add the output package to your environment:
 ```nix
 # add system-wide
 environment.systemPackages = [
-  inputs.nvim-flake.packages.${pkgs.stdenv.hostPlatform.system}.default
+  inputs.nvim-flake.packages.${pkgs.stdenv.hostPlatform.system}.full
+  inputs.nvim-flake.packages.${pkgs.stdenv.hostPlatform.system}.minimal
 ];
 # add per-user
 users.users."<name>".packages = [
   inputs.nvim-flake.packages.${pkgs.stdenv.hostPlatform.system}.default
+  inputs.nvim-flake.packages.${pkgs.stdenv.hostPlatform.system}.minimal
 ];
 ```
 

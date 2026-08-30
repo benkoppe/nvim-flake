@@ -24,4 +24,4 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: DeterminateSystems/determinate-nix-action@v3.22.2
-      - run: nix build .#default --print-build-logs
+      - run: nix build .#full .#default .#minimal --print-build-logs

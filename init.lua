@@ -1,8 +1,19 @@
-if mnw ~= nil then
-	local config_path = mnw.configDir .. "/pack/mnw/start/ben"
-	if (vim.uv or vim.loop).fs_stat(config_path) then
-		vim.cmd("packadd! ben")
-	end
-end
+vim.loader.enable()
 
-require("config.lazy")
+vim.keymap.set("n", " ", "<Nop>", {
+	silent = true,
+	remap = false,
+})
+
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
+
+require("config.options")
+require("config.filetypes")
+require("config.autocmds")
+
+local lze = require("lze")
+lze.register_handlers(require("config.lze.which_key"))
+lze.load("plugins")
+
+require("config.keymaps")
