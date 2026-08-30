@@ -57,3 +57,4 @@ In the same way, it can be added to `home-manager` or `nix-darwin` configuration
 ## Inspiration
 
 - [@Gerg-L](https://github.com/Gerg-L)'s [nvim-flake](https://github.com/Gerg-L/nvim-flake)
+- [LazyVim](https://www.lazyvim.org/)
