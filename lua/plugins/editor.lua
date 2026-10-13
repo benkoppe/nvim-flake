@@ -288,6 +288,16 @@ return {
 				desc = "Git blame",
 			},
 			{
+				"<leader>gB",
+				function()
+					local line = vim.fn.line(".")
+					require("fzf-lua").git_blame({
+						cmd = string.format("git blame -L %d,%d", line, line),
+					})
+				end,
+				desc = "Git blame current line",
+			},
+			{
 				"<leader>gf",
 				"<cmd>FzfLua git_bcommits<cr>",
 				desc = "Current file history",
