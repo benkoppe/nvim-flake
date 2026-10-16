@@ -101,11 +101,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791440872,
-        "narHash": "sha256-PwiSn1VO3/6BD/Gxw/3Ei2sPB3SccyKyJ7nD72Y+WU4=",
+        "lastModified": 1791893148,
+        "narHash": "sha256-aASd3Lse6SntcBSrXaztzlg3C0faBHSh4DBY4KbpxyM=",
         "owner": "BirdeeHub",
         "repo": "nix-wrapper-modules",
-        "rev": "d82c328c504648fa952f25fac8332319eb425d4c",
+        "rev": "9168220b37da144fc7f689af9b41a6acf59ab768",
         "type": "github"
       },
       "original": {
