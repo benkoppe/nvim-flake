@@ -245,7 +245,7 @@
       "fsautocomplete"
       "kotlin_language_server"
       "ocamllsp"
-      "phpactor"
+      # "phpactor"
       "prismals"
       "rubocop"
       "sourcekit"
@@ -309,7 +309,7 @@
         ocamlPackages.ocaml-lsp
 
         # PHP
-        phpactor
+        # phpactor
 
         # Ruby
         rubocop
@@ -368,7 +368,6 @@
       ]
       ++ lib.optionals profile.extendedTools [
         # VimTeX
-        pplatex
         (texliveSmall.withPackages (tex: [
           tex.latexmk
         ]))
@@ -378,7 +377,7 @@
         ninja
 
         # PHP
-        php
+        # php
 
         # Zig
         zig
@@ -487,7 +486,7 @@
         ocamlPackages.ocamlformat
 
         # PHP
-        phpPackages.php-cs-fixer
+        # phpPackages.php-cs-fixer
 
         # .NET
         csharpier
@@ -531,7 +530,7 @@
         hlint
 
         # PHP
-        phpPackages.php-codesniffer
+        # phpPackages.php-codesniffer
 
         # Kotlin
         ktlint
